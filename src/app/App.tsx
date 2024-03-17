@@ -1,54 +1,42 @@
 import React from 'react'
-import { LaptopOutlined, NotificationOutlined, UserOutlined } from '@ant-design/icons'
+import { HeaderMenu } from '@/widgets/header-menu'
+import {
+  LaptopOutlined,
+  NotificationOutlined,
+  UserOutlined,
+} from '@ant-design/icons'
 import type { MenuProps } from 'antd'
 import { Breadcrumb, Layout, Menu, theme } from 'antd'
-import { child, get, getDatabase, ref } from 'firebase/database'
+import '@/shared/config/firebase/firebase.js'
 
 const { Header, Content, Footer, Sider } = Layout
 
-const items1: MenuProps['items'] = ['1', '2', '3'].map((key) => ({
-  key,
-  label: `nav ${key}`,
-}))
+const items2: MenuProps['items'] = [
+  UserOutlined,
+  LaptopOutlined,
+  NotificationOutlined,
+].map((icon, index) => {
+  const key = String(index + 1)
 
-const items2: MenuProps['items'] = [UserOutlined, LaptopOutlined, NotificationOutlined].map(
-  (icon, index) => {
-    const key = String(index + 1)
+  return {
+    key: `sub${key}`,
+    icon: React.createElement(icon),
+    label: `subnav ${key}`,
 
-    return {
-      key: `sub${key}`,
-      icon: React.createElement(icon),
-      label: `subnav ${key}`,
-
-      children: new Array(4).fill(null).map((_, j) => {
-        const subKey = index * 4 + j + 1
-        return {
-          key: subKey,
-          label: `option${subKey}`,
-        }
-      }),
-    }
-  },
-)
+    children: new Array(4).fill(null).map((_, j) => {
+      const subKey = index * 4 + j + 1
+      return {
+        key: subKey,
+        label: `option${subKey}`,
+      }
+    }),
+  }
+})
 
 const App: React.FC = () => {
   const {
     token: { colorBgContainer },
   } = theme.useToken()
-
-  const dbRef = ref(getDatabase())
-  get(child(dbRef, `offices/`))
-    .then((snapshot) => {
-      console.log(snapshot.val())
-      if (snapshot.exists()) {
-        console.log(snapshot.val())
-      } else {
-        console.log('No data available')
-      }
-    })
-    .catch((error) => {
-      console.error(error)
-    })
 
   return (
     <Layout
@@ -57,7 +45,8 @@ const App: React.FC = () => {
         height: '100svh',
         display: 'flex',
         justifyContent: 'space-between',
-      }}>
+      }}
+    >
       <Header style={{ display: 'flex', alignItems: 'center' }}>
         <div
           style={{
@@ -69,13 +58,7 @@ const App: React.FC = () => {
             marginInlineEnd: 24,
           }}
         />
-        <Menu
-          theme="dark"
-          mode="horizontal"
-          defaultSelectedKeys={['2']}
-          items={items1}
-          style={{ flex: 1, minWidth: 0 }}
-        />
+        <HeaderMenu />
       </Header>
       <Content style={{ padding: '0 48px' }}>
         <Breadcrumb
@@ -93,8 +76,12 @@ const App: React.FC = () => {
             background: colorBgContainer,
             borderRadius: 10,
             height: 'calc(98% - 40px)',
-          }}>
-          <Sider style={{ background: colorBgContainer, height: '100%' }} width={200}>
+          }}
+        >
+          <Sider
+            style={{ background: colorBgContainer, height: '100%' }}
+            width={200}
+          >
             <Menu
               mode="inline"
               defaultSelectedKeys={['1']}
@@ -103,7 +90,7 @@ const App: React.FC = () => {
               items={items2}
             />
           </Sider>
-          <Content style={{ padding: '0 24px', minHeight: 280 }}>Content</Content>
+          <Content style={{ padding: '0 24px', minHeight: 280 }}>123</Content>
         </Layout>
       </Content>
       <Footer style={{ textAlign: 'center' }}>
@@ -114,4 +101,3 @@ const App: React.FC = () => {
 }
 
 export default App
-
