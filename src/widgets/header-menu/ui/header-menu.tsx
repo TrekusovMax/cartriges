@@ -1,48 +1,41 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { child, get, getDatabase, ref } from 'firebase/database'
 import { Menu } from 'antd'
+import { useGetOfficesQuery } from '@/entities/app/api'
 import type { MenuProps } from 'antd'
 
-interface menuItems {
-  name: string
-}
-
 export const HeaderMenu = () => {
-  const [menuItems, setMenuItems] = useState<menuItems[]>([])
+  const [menuItems, setMenuItems] = useState<MenuProps['items']>([])
+  const { data } = useGetOfficesQuery()
 
   useEffect(() => {
-    const dbRef = ref(getDatabase())
-    get(child(dbRef, `offices/`))
-      .then((snapshot) => {
-        if (snapshot.exists()) {
-          setMenuItems(snapshot.val())
-        } else {
-          console.log('No data available')
-        }
-      })
-      .catch((error) => {
-        console.error(error)
-      })
-  }, [])
+    if (data) {
+      const menuValues = Object.values(data).map((item) => item.name)
+      const menuKeys = Object.keys(data)
+      const items: MenuProps['items'] = menuValues.map((key, i) => ({
+        key,
+        label: (
+          <Link to={`${menuKeys[i]}`} rel="noopener noreferrer">
+            {key}
+          </Link>
+        ),
+      }))
 
-  const menuValues = Object.values(menuItems).map((item) => item.name)
-  const items: MenuProps['items'] = menuValues.map((key) => ({
-    key,
-    label: (
-      <Link to="https://ant.design" rel="noopener noreferrer">
-        {key}
-      </Link>
-    ),
-  }))
+      setMenuItems(items)
+    }
+  }, [data])
 
   return (
-    <Menu
-      theme="dark"
-      mode="horizontal"
-      defaultSelectedKeys={['1']}
-      items={items}
-      style={{ flex: 1, minWidth: 0 }}
-    />
+    <>
+      {data && (
+        <Menu
+          theme="dark"
+          mode="horizontal"
+          defaultSelectedKeys={['1']}
+          items={menuItems}
+          style={{ flex: 1, minWidth: 0 }}
+        />
+      )}
+    </>
   )
 }
