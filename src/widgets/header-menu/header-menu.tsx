@@ -28,13 +28,7 @@ export const HeaderMenu = () => {
   return (
     <>
       {data && (
-        <Menu
-          theme="dark"
-          mode="horizontal"
-          defaultSelectedKeys={['1']}
-          items={menuItems}
-          style={{ flex: 1, minWidth: 0 }}
-        />
+        <Menu theme="dark" mode="horizontal" items={menuItems} style={{ flex: 1, minWidth: 0 }} />
       )}
     </>
   )

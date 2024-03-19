@@ -1,1 +1,1 @@
-export { HeaderMenu } from './ui/header-menu'
+export { HeaderMenu } from './header-menu'
