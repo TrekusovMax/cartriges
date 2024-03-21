@@ -2,7 +2,7 @@ import React from 'react'
 
 import { Providers } from './providers'
 import { RoutesProvider } from './providers/routes-provider'
-import '@/shared/config/firebase/firebase.js'
+import '@/shared/config/firebase/firebase-config.js'
 
 const App: React.FC = () => {
   return (

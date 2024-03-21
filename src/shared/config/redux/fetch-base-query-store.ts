@@ -10,7 +10,7 @@ import { localStorageService } from '@/shared/services/localStorage.service'
 import { userLogout, userRefresh } from '@/entities/user/model/user.selectors' */
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: 'https://cartrige-accounting-default-rtdb.europe-west1.firebasedatabase.app/',
+  baseUrl: import.meta.env.VITE_FIREBASE_DATABASE_STORAGE_URL,
   prepareHeaders: (headers) => {
     headers.append('Content-Type', 'application/json')
     headers.append('Accept', 'application/json')
@@ -18,7 +18,7 @@ const baseQuery = fetchBaseQuery({
   },
 })
 
-export const baseQueryWithResult: BaseQueryFn<
+export const baseStoreQueryWithResult: BaseQueryFn<
   string | FetchArgs,
   unknown,
   FetchBaseQueryError
@@ -31,8 +31,7 @@ export const baseQueryWithResult: BaseQueryFn<
       await authBaseQuery(
         {
           url: `token?key=${import.meta.env.VITE_FIREBASE_KEY}`,
-          method: 'POST',import { authBaseQuery } from './fetch-base-query-store';
-
+          method: 'POST',
           body: {
             grant_type: 'refresh_token',
             refresh_token: user.refreshToken,

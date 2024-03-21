@@ -20,7 +20,6 @@ export const Content = () => {
         }}>
         <Sider />
         <Layout.Content style={{ padding: '0 24px', minHeight: 280 }}>
-          asd
           <Outlet />
         </Layout.Content>
       </Layout>

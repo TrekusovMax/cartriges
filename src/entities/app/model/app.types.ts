@@ -1,3 +1,3 @@
-export interface HeaderMenuItem {
-  [key: string]: { name: string }
+export interface IOffices {
+  [key: string]: IOffices
 }
