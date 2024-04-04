@@ -15,7 +15,6 @@ export const MainPage = () => {
       setOffices(Object.keys(data))
     }
   }, [data])
-  console.log(data)
 
   return (
     <div>
