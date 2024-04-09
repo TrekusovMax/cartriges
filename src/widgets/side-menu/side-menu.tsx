@@ -3,7 +3,7 @@ import { PrinterOutlined } from '@ant-design/icons'
 import { Menu } from 'antd'
 import type { MenuProps } from 'antd'
 import { useGetOfficesQuery } from '@/entities/app/api'
-import { Link, useLocation, useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 
 export const SideMenu = () => {
   const [menuItems, setMenuItems] = useState<MenuProps['items']>([])
@@ -26,7 +26,9 @@ export const SideMenu = () => {
               key: subKey,
               label: (
                 <Link
-                  to={`http://${window.location.host}/office/${menuKeys[index]}/${j}`}>{`option${subKey}`}</Link>
+                  to={`${import.meta.env.VITE_HOST}/office/${
+                    menuKeys[index]
+                  }/${j}`}>{`option${subKey}`}</Link>
               ),
               icon: React.createElement(PrinterOutlined),
             }
