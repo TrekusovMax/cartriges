@@ -3,7 +3,7 @@ import { PrinterOutlined } from '@ant-design/icons'
 import { Menu } from 'antd'
 import type { MenuProps } from 'antd'
 import { useGetOfficesQuery } from '@/entities/app/api'
-import { useParams } from 'react-router-dom'
+import { Link, useLocation, useParams } from 'react-router-dom'
 
 export const SideMenu = () => {
   const [menuItems, setMenuItems] = useState<MenuProps['items']>([])
@@ -14,7 +14,9 @@ export const SideMenu = () => {
   useEffect(() => {
     if (data) {
       const menuValues = data && Object.values(data).map((item) => item.name)
-      const items: MenuProps['items'] = menuValues!.map((item, index) => {
+      const menuKeys = data && Object.keys(data)
+
+      const items: MenuProps['items'] = menuValues.map((item, index) => {
         return {
           key: `${item}`,
           label: `${item}`,
@@ -22,20 +24,26 @@ export const SideMenu = () => {
             const subKey = index * 4 + j + 1
             return {
               key: subKey,
-              label: `option${subKey}`,
+              label: (
+                <Link
+                  to={`http://${window.location.host}/office/${menuKeys[index]}/${j}`}>{`option${subKey}`}</Link>
+              ),
               icon: React.createElement(PrinterOutlined),
             }
           }),
           onTitleClick: (title) => {
             if (title.key === menuValues[index]) {
               setOpenMenuIndex([menuValues[index]])
-            } /*  else {
-              return
-            } */
+            }
           },
         }
       })
       setMenuItems(items)
+      if (office) {
+        setOpenMenuIndex([data[office].name])
+      } else {
+        setOpenMenuIndex([])
+      }
     }
   }, [data, office])
 

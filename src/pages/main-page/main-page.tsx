@@ -23,7 +23,7 @@ export const MainPage = () => {
           <Flex style={{ width: '100%', height: 200 }} justify="space-evenly" align="flex-start">
             {data &&
               offices.map((office) => (
-                <Link to={`/${office}`} key={office}>
+                <Link to={`/office/${office}`} key={office}>
                   <OfficeCard
                     title={data[office].name}
                     imgSrc={data[office].image}

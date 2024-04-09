@@ -22,8 +22,14 @@ export const RoutesProvider = () => {
           index
           element={<Suspense fallback={'Loading...' /* <Loader /> */}>{<MainPage />}</Suspense>}
         />
+      </Route>
+      <Route path="/office" element={<MainLayout />}>
         <Route
-          path=":office"
+          index
+          element={<Suspense fallback={'Loading...' /* <Loader /> */}>{<MainPage />}</Suspense>}
+        />
+        <Route
+          path=":office?/:printer?"
           element={<Suspense fallback={'Loading...' /* <Loader /> */}>{<OfficePage />}</Suspense>}
         />
       </Route>

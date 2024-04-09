@@ -1,6 +1,15 @@
-import { useParams } from 'react-router-dom'
+import { Navigate, useParams } from 'react-router-dom'
 
 export const Office = () => {
-  const { office } = useParams()
-  return <div>{office}</div>
+  const { office, printer } = useParams()
+  if (!office) {
+    // return <Navigate to={'/'} />
+  }
+
+  return (
+    <>
+      <div>{office}</div>
+      <div>{printer}</div>
+    </>
+  )
 }

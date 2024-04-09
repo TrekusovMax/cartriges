@@ -15,7 +15,7 @@ export const Content = () => {
           padding: '24px 0',
           background: colorBgContainer,
           borderRadius: 10,
-          //height: 'calc(100% - 40px)',
+          height: 'calc(100svh - 160px)',
           minHeight: 700,
         }}>
         <Sider />
