@@ -6,8 +6,8 @@ import { MainLayout } from '@/widgets/main-layout'
 //import { Loader } from '@/shared/ui/loader'
 const MainPage = lazy(() => import('@/pages/main-page'))
 const OfficePage = lazy(() => import('@/pages/office'))
+const AddPrinter = lazy(() => import('@/pages/add-printer'))
 /* const UserProfile = lazy(() => import('@/pages/profile'))
-const SitesNew = lazy(() => import('@/pages/sites-new'))
 const LoginForm = lazy(() => import('@/pages/login'))
 const RegisterForm = lazy(() => import('@/pages/register'))
 const PasswordForm = lazy(() => import('@/pages/password-form'))
@@ -31,6 +31,12 @@ export const RoutesProvider = () => {
         <Route
           path=":office?/:printer?"
           element={<Suspense fallback={'Loading...' /* <Loader /> */}>{<OfficePage />}</Suspense>}
+        />
+      </Route>
+      <Route path="/add-item" element={<MainLayout />}>
+        <Route
+          index
+          element={<Suspense fallback={'Loading...' /* <Loader /> */}>{<AddPrinter />}</Suspense>}
         />
       </Route>
 

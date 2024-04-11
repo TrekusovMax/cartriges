@@ -5,6 +5,7 @@ import { IOffices } from '../model/app.types'
 export const appApi = createApi({
   reducerPath: 'appApi',
   baseQuery: baseQueryWithResult,
+  tagTypes: ['appApi'],
   endpoints: (build) => ({
     getOffices: build.query<IOffices, void>({
       query: () => ({
