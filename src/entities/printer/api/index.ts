@@ -1,1 +1,1 @@
-export { useGetPrintersQuery, printerApi } from './printer.api'
+export { useGetPrintersQuery, printerApi, useAddPrinterMutation } from './printer.api'

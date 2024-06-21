@@ -4,31 +4,56 @@ import { Menu } from 'antd'
 import type { MenuProps } from 'antd'
 import { useGetOfficesQuery } from '@/entities/app/api'
 import { Link, useParams } from 'react-router-dom'
+import { useGetPrintersQuery } from '@/entities/printer/api'
+
+interface IMenuItems {
+  [key: string]: string[]
+}
 
 export const SideMenu = () => {
   const [menuItems, setMenuItems] = useState<MenuProps['items']>([])
   const [openMenuIndex, setOpenMenuIndex] = useState<string[]>([])
-  const { data } = useGetOfficesQuery()
+  const { data: officeData } = useGetOfficesQuery()
+  const { data: printerData } = useGetPrintersQuery()
   const { office } = useParams()
+  const sideMenuItems: IMenuItems = {}
 
   useEffect(() => {
-    if (data) {
-      const menuValues = data && Object.values(data).map((item) => item.name)
-      const menuKeys = data && Object.keys(data)
+    if (officeData && printerData) {
+      const printerDataValues = printerData && Object.values(printerData)
+      const menuKeys = officeData && Object.keys(officeData)
+      const menuValues = Object.values(officeData).map((i) => i.name)
 
+      menuKeys.map((item) => {
+        sideMenuItems[officeData[item].name] = []
+        printerDataValues.map((printer) => {
+          if (printer.office === item) {
+            sideMenuItems[officeData[item].name] = [
+              ...sideMenuItems[officeData[item].name],
+              printer.title,
+            ]
+          }
+        })
+      })
+
+      const printersCount = Object.keys(printerData).length
       const items: MenuProps['items'] = menuValues.map((item, index) => {
+        const printersInOfficeCount = Object.keys(sideMenuItems[item]).length
+
         return {
           key: `${item}`,
           label: `${item}`,
-          children: new Array(4).fill(null).map((_, j) => {
-            const subKey = index * 4 + j + 1
+          children: new Array(printersInOfficeCount).fill(null).map((_, j) => {
+            const subKey = index * printersCount + j + 1
             return {
               key: subKey,
               label: (
                 <Link
-                  to={`${import.meta.env.VITE_HOST}/office/${
-                    menuKeys[index]
-                  }/${j}`}>{`option${subKey}`}</Link>
+                  to={`${import.meta.env.VITE_HOST}/office/${menuKeys[index]}/${
+                    sideMenuItems[item][j]
+                  }`}>
+                  {sideMenuItems[item][j]}
+                </Link>
               ),
               icon: React.createElement(PrinterOutlined),
             }
@@ -42,14 +67,14 @@ export const SideMenu = () => {
       })
       setMenuItems(items)
       if (office) {
-        setOpenMenuIndex([data[office].name])
+        setOpenMenuIndex([officeData[office].name])
       } else {
         setOpenMenuIndex([])
       }
     }
-  }, [data, office])
+  }, [officeData, office, printerData])
 
-  const openMenuKey = office && data ? data[office].name : ''
+  const openMenuKey = office && officeData ? officeData[office].name : ''
 
   return (
     <Menu

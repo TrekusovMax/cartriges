@@ -6,7 +6,7 @@ export const Sider = () => {
     token: { colorBgContainer },
   } = theme.useToken()
   return (
-    <Layout.Sider style={{ background: colorBgContainer, height: '100%' }} width={200}>
+    <Layout.Sider style={{ background: colorBgContainer, height: '100%' }} width={300}>
       <SideMenu />
     </Layout.Sider>
   )
