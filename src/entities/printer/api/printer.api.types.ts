@@ -9,4 +9,5 @@ export interface IPrinter {
   xeroxNumber: string
   ip: string | undefined
   office: string
+  description: string | undefined
 }

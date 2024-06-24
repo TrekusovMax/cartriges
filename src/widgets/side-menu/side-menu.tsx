@@ -20,19 +20,18 @@ export const SideMenu = () => {
 
   useEffect(() => {
     if (officeData && printerData) {
-      const printerDataValues = printerData && Object.values(printerData)
-      const menuKeys = officeData && Object.keys(officeData)
+      const printerDataValues = Object.values(printerData)
+      const menuKeys = Object.keys(officeData)
       const menuValues = Object.values(officeData).map((i) => i.name)
 
       menuKeys.map((item) => {
         sideMenuItems[officeData[item].name] = []
+        const subMenu = new Set<string>()
         printerDataValues.map((printer) => {
           if (printer.office === item) {
-            sideMenuItems[officeData[item].name] = [
-              ...sideMenuItems[officeData[item].name],
-              printer.title,
-            ]
+            subMenu.add(printer.title)
           }
+          sideMenuItems[officeData[item].name] = Array.from(subMenu)
         })
       })
 

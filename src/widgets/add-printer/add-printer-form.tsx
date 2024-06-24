@@ -1,58 +1,29 @@
-import { useEffect, useRef, useState } from 'react'
-import { storage } from '@/shared/config/firebase/firebase-config'
-import { InboxOutlined, PlusOutlined } from '@ant-design/icons'
-import {
-  Button,
-  Divider,
-  Flex,
-  Form,
-  Input,
-  InputRef,
-  Progress,
-  Select,
-  Space,
-  Upload,
-  message,
-} from 'antd'
-import { RcFile, UploadChangeParam, UploadFile } from 'antd/es/upload'
-import { UploadTaskSnapshot, getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage'
-import { useForm, SubmitHandler, Controller } from 'react-hook-form'
+import { useState } from 'react'
+import { InboxOutlined } from '@ant-design/icons'
+import { Button, Flex, Form, Input, Progress, Select, Space, Upload, message } from 'antd'
+import { RcFile } from 'antd/es/upload'
+import { useForm, Controller, SubmitHandler } from 'react-hook-form'
 import { IPrinter } from '@/entities/printer/api/printer.api.types'
-import { useAddPrinterMutation, useGetPrintersQuery } from '@/entities/printer/api'
+import { useAddPrinter } from '@/shared/hooks'
+import { useGetOfficesQuery } from '@/entities/app/api'
+import { useAddPrinterMutation } from '@/entities/printer/api'
+import { UploadTaskSnapshot, getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage'
+import { storage } from '@/shared/config/firebase/firebase-config'
+import { AddPrinterSelect } from '@/shared/components'
 
 type ProgressStatuses = 'normal' | 'exception' | 'active' | 'success'
 
 export const AddPrinterForm = () => {
-  const [progress, setProgress] = useState(0)
   const [showProgress, setShowProgress] = useState(false)
-  const [showUploadList, setShowUploadList] = useState(true)
+
+  const [progress, setProgress] = useState(0)
   const [uploadStatus, setUploadStatus] = useState<ProgressStatuses>('active')
-  const [fileUpload, setFileUpload] = useState<File | null>(null)
+
+  const { data: offices } = useGetOfficesQuery()
 
   const [addPrinter] = useAddPrinterMutation()
-  const { data } = useGetPrintersQuery()
 
-  const [items, setItems] = useState<string[]>([])
-  const [name, setName] = useState('')
-  const inputRef = useRef<InputRef>(null)
-
-  const onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setName(event.target.value)
-  }
-
-  const addItem = (e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
-    e.preventDefault()
-    if (!name.trim().length) return
-    if (items.indexOf(name.trim()) >= 0) {
-      setName('')
-      return
-    }
-    setItems([...items, name])
-    setName('')
-    setTimeout(() => {
-      inputRef.current?.focus()
-    }, 0)
-  }
+  const office = offices && Object.keys(offices)
 
   const {
     control,
@@ -67,21 +38,12 @@ export const AddPrinterForm = () => {
     }
     return e?.fileList
   }
-  useEffect(() => {
-    if (data) {
-      const dataKeys = Object.keys(data)
-      const printerList = new Set<string>()
-
-      dataKeys.map((k: string) => {
-        printerList.add(data[k].title)
-      })
-
-      setItems(Array.from(printerList))
-    }
-  }, [data])
 
   const ipRegex =
     /^(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])$/
+
+  const { onChange, onChangeIp, showUploadList, fileUpload, setFileUpload, setShowUploadList } =
+    useAddPrinter()
 
   const onFinish: SubmitHandler<IPrinter> = (data) => {
     if (fileUpload) {
@@ -115,6 +77,7 @@ export const AddPrinterForm = () => {
               office: data.office,
               serialNumber: data.serialNumber,
               xeroxNumber: data.xeroxNumber,
+              description: data.description,
             })
           })
           setUploadStatus('success')
@@ -125,42 +88,11 @@ export const AddPrinterForm = () => {
       )
     }
   }
-  const onChange = (info: UploadChangeParam<UploadFile<any>>) => {
-    const { status } = info.file
-    setShowUploadList(true)
-    if (status === 'removed') {
-      setFileUpload(null)
-    }
-  }
-
   const onReset = () => {
     setShowProgress(false)
     setFileUpload(null)
     setShowUploadList(false)
     reset()
-  }
-
-  const onChangeIp: React.ChangeEventHandler<HTMLInputElement> = (e) => {
-    let value = e.target.value
-
-    // Удаляем все символы, кроме цифр и точек
-    value = value.replace(/[^0-9.]/g, '')
-
-    // Разбиваем строку на части, разделенные точками
-    const parts = value.split('.').slice(0, 4)
-
-    // Ограничиваем каждую часть до 3 цифр
-    for (let i = 0; i < parts.length; i++) {
-      if (parts[i].length > 3) {
-        parts[i] = parts[i].slice(0, 3)
-      }
-    }
-
-    // Соединяем части обратно в строку
-    value = parts.join('.')
-
-    // Обновляем значение поля ввода
-    e.target.value = value
   }
 
   return (
@@ -210,38 +142,7 @@ export const AddPrinterForm = () => {
             validateStatus={errors.title ? 'error' : ''}
             help={errors.title ? errors.title.message : ''}
             style={{ width: '100%' }}>
-            <Controller
-              name="title"
-              control={control}
-              defaultValue=""
-              rules={{ required: 'Наименование не должно быть пустым' }}
-              render={({ field }) => (
-                <Select
-                  {...field}
-                  placeholder="Выберите МФУ или добавте новую"
-                  dropdownRender={(menu) => (
-                    <>
-                      {menu}
-                      <Divider style={{ margin: '8px 0' }} />
-                      <Space style={{ padding: '0 8px 4px' }}>
-                        <Input
-                          style={{ width: '100%' }}
-                          placeholder="Введите название"
-                          ref={inputRef}
-                          value={name}
-                          onChange={onNameChange}
-                          onKeyDown={(e) => e.stopPropagation()}
-                        />
-                      </Space>
-                      <Button type="text" icon={<PlusOutlined />} onClick={addItem}>
-                        Добавить МФУ
-                      </Button>
-                    </>
-                  )}
-                  options={items.map((item) => ({ label: item, value: item }))}
-                />
-              )}
-            />
+            <AddPrinterSelect controllerName="title" control={control} />
           </Form.Item>
           <Form.Item
             label="Серийный номер"
@@ -299,11 +200,27 @@ export const AddPrinterForm = () => {
               rules={{ required: 'Офис не должен быть пустым' }}
               render={({ field }) => (
                 <Select {...field}>
-                  <Select.Option value="dmitrov">Дмитров</Select.Option>
-                  <Select.Option value="sposad">Сергиев Посад</Select.Option>
-                  <Select.Option value="taldom">Талдом</Select.Option>
+                  {office?.length &&
+                    office.map((item) => (
+                      <Select.Option key={item} value={`${item}`}>
+                        {office && offices[item].name}
+                      </Select.Option>
+                    ))}
                 </Select>
               )}
+            />
+          </Form.Item>
+          <Form.Item
+            label="Расположение"
+            validateStatus={errors.description ? 'error' : ''}
+            help={errors.description ? errors.description.message : ''}
+            style={{ width: '100%' }}>
+            <Controller
+              name="description"
+              control={control}
+              defaultValue=""
+              rules={{ required: 'Поле не может быть пустым' }}
+              render={({ field }) => <Input {...field} />}
             />
           </Form.Item>
         </Flex>
