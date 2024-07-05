@@ -1,11 +1,12 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { lazy, Suspense } from 'react'
 //import { ProtectedRoute } from './protected-route'
-import { MainLayout } from '@/widgets/main-layout'
+import { MainLayout } from '@/widgets/layout/main-layout'
 
 //import { Loader } from '@/shared/ui/loader'
 const MainPage = lazy(() => import('@/pages/main-page'))
 const OfficePage = lazy(() => import('@/pages/office'))
+const PrinterPage = lazy(() => import('@/pages/printer-page'))
 const AddPrinter = lazy(() => import('@/pages/add-printer'))
 /* const UserProfile = lazy(() => import('@/pages/profile'))
 const LoginForm = lazy(() => import('@/pages/login'))
@@ -29,8 +30,12 @@ export const RoutesProvider = () => {
           element={<Suspense fallback={'Loading...' /* <Loader /> */}>{<MainPage />}</Suspense>}
         />
         <Route
-          path=":office?/:printer?"
+          path=":office"
           element={<Suspense fallback={'Loading...' /* <Loader /> */}>{<OfficePage />}</Suspense>}
+        />
+        <Route
+          path=":office/:printer"
+          element={<Suspense fallback={'Loading...' /* <Loader /> */}>{<PrinterPage />}</Suspense>}
         />
       </Route>
       <Route path="/add-item" element={<MainLayout />}>

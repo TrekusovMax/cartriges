@@ -1,5 +1,5 @@
 import { Layout } from 'antd'
-import { HeaderMenu } from '../header-menu'
+import { HeaderMenu } from '../../header-menu'
 import { Link } from 'react-router-dom'
 
 export const Header = () => {
