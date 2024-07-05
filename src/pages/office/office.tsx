@@ -11,9 +11,6 @@ export const Office = () => {
   const { office, printer } = useParams()
   const { data: printerData } = useGetPrintersQuery()
 
-  if (!office) {
-    // return <Navigate to={'/'} />
-  }
   const [items, setItems] = useState<IPrinter[]>([])
   useEffect(() => {
     if (printerData) {

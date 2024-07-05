@@ -3,7 +3,7 @@ import { PrinterOutlined } from '@ant-design/icons'
 import { Menu } from 'antd'
 import type { MenuProps } from 'antd'
 import { useGetOfficesQuery } from '@/entities/app/api'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useGetPrintersQuery } from '@/entities/printer/api'
 
 interface IMenuItems {
@@ -17,9 +17,15 @@ export const SideMenu = () => {
   const { data: printerData } = useGetPrintersQuery()
   const { office } = useParams()
   const sideMenuItems: IMenuItems = {}
+  const location = useNavigate()
+  let openMenuKey = ''
 
   useEffect(() => {
     if (officeData && printerData) {
+      if (!(officeData && office && officeData[office])) {
+        location('/')
+      }
+
       const printerDataValues = Object.values(printerData)
       const menuKeys = Object.keys(officeData)
       const menuValues = Object.values(officeData).map((i) => i.name)
@@ -65,7 +71,7 @@ export const SideMenu = () => {
         }
       })
       setMenuItems(items)
-      if (office) {
+      if (office && officeData[office]?.name) {
         setOpenMenuIndex([officeData[office].name])
       } else {
         setOpenMenuIndex([])
@@ -73,7 +79,7 @@ export const SideMenu = () => {
     }
   }, [officeData, office, printerData])
 
-  const openMenuKey = office && officeData ? officeData[office].name : ''
+  openMenuKey = (office && officeData && officeData[office]?.name) || ''
 
   return (
     <Menu
