@@ -1,42 +1,45 @@
 import { useGetPrintersQuery } from '@/entities/printer/api'
+import { IPrinter } from '@/entities/printer/api/printer.api.types'
+import { isPrinter, isPrintersArray } from '@/shared/functions'
+import { Loader } from '@/shared/ui/loader'
+import { DeleteOutlined, EditOutlined } from '@ant-design/icons'
+import { Card, Flex, message, Popconfirm } from 'antd'
+import Meta from 'antd/es/card/Meta'
+import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 
-import { Card, Flex, message, Popconfirm } from 'antd'
-import { useEffect, useState } from 'react'
-import { IPrinter } from '@/entities/printer/api/printer.api.types'
-import { DeleteOutlined, EditOutlined } from '@ant-design/icons'
-
-const { Meta } = Card
-
-export const Office = () => {
-  const { office, printer } = useParams()
-  const { data: printerData } = useGetPrintersQuery()
+export const PrintersListPage = () => {
+  const [items, setItems] = useState<IPrinter[] | IPrinter>([])
   const navigate = useNavigate()
-  const [items, setItems] = useState<IPrinter[]>([])
+  const { printer, office, id } = useParams()
+  const { data: printerData } = useGetPrintersQuery()
+
   useEffect(() => {
     if (printerData) {
-      if (office) {
-        const elems = Object.values(printerData) /* .map((elem, index) => [
-          { ...elem, id: printerData[index] },
-        ]) */
-        console.log(elems)
-        console.log(printerData)
-        setItems(Object.values(printerData).filter((item) => item.office === office))
+      if (id) {
+        setItems(printerData[id])
       } else if (printer) {
-        setItems(Object.values(printerData).filter((item) => item.title === printer))
+        setItems(
+          Object.values(printerData).filter(
+            (item) => item.title === printer && item.office === office,
+          ),
+        )
       }
     }
   }, [printerData, office, printer])
+
   const onEdit = () => {
     navigate(`${location.pathname}/edit`, { state: { location: location.pathname } })
   }
-
   return (
     <>
-      <Flex justify={'space-between'} align={'center'} wrap={'wrap'} style={{ padding: '0 50px' }}>
-        {printerData &&
+      <Flex justify={'space-around'} align={'center'} wrap={'wrap'} style={{ padding: '0 50px' }}>
+        {printerData ? (
+          isPrintersArray(items) &&
           items.map((elem, index) => (
-            <Link to={`${import.meta.env.VITE_HOST}/printer/${items[index]}`} key={index}>
+            <Link
+              to={`${import.meta.env.VITE_HOST}/printer/${Object.keys(printerData)[index]}`}
+              key={index}>
               <Card
                 hoverable
                 style={{ width: 300, marginTop: 20 }}
@@ -61,7 +64,23 @@ export const Office = () => {
                 <Meta description={elem.ip} />
               </Card>
             </Link>
-          ))}
+          ))
+        ) : (
+          <Loader />
+        )}
+        {printerData ? (
+          isPrinter(items) && (
+            <Card
+              hoverable
+              style={{ width: 300, marginTop: 20 }}
+              cover={<img alt="example" src={items.image} height={400} />}>
+              <Meta title={items.title} description={items.description} />
+              <Meta description={items.ip} />
+            </Card>
+          )
+        ) : (
+          <Loader />
+        )}
       </Flex>
     </>
   )

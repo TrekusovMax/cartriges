@@ -3,6 +3,7 @@ export interface DBOffices {
   [key: string]: IPrinter
 }
 export interface IPrinter {
+  id?: string
   image: string
   title: string
   serialNumber: string

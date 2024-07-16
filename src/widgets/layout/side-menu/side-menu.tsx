@@ -22,10 +22,6 @@ export const SideMenu = () => {
 
   useEffect(() => {
     if (officeData && printerData) {
-      if (!(officeData && office && officeData[office])) {
-        location('/')
-      }
-
       const printerDataValues = Object.values(printerData)
       const menuKeys = Object.keys(officeData)
       const menuValues = Object.values(officeData).map((i) => i.name)
@@ -82,11 +78,17 @@ export const SideMenu = () => {
   openMenuKey = (office && officeData && officeData[office]?.name) || ''
 
   return (
-    <Menu
-      mode="inline"
-      openKeys={openMenuIndex.length ? openMenuIndex : [openMenuKey]}
-      style={{ height: '100%' }}
-      items={menuItems}
-    />
+    <>
+      {officeData && officeData[office!] ? (
+        <Menu
+          mode="inline"
+          openKeys={openMenuIndex.length ? openMenuIndex : [openMenuKey]}
+          style={{ height: '100%' }}
+          items={menuItems}
+        />
+      ) : (
+        <Menu mode="inline" style={{ height: '100%' }} items={menuItems} />
+      )}
+    </>
   )
 }
