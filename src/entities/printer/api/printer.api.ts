@@ -14,9 +14,6 @@ export const printerApi = createApi({
       providesTags: ['printers'],
     }),
     addPrinter: build.mutation<IPrinter, IPrinter>({
-      onQueryStarted: (body) => {
-        console.log('BODY: ', body)
-      },
       query: (body) => ({
         url: 'printers.json',
         method: 'POST',

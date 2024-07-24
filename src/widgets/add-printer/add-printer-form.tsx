@@ -1,19 +1,28 @@
-import { useState } from 'react'
-import { InboxOutlined } from '@ant-design/icons'
-import { Button, Flex, Form, Input, Progress, Select, Space, Upload, message } from 'antd'
-import { RcFile } from 'antd/es/upload'
+import { useCallback, useState } from 'react'
+
+import { Button, Flex, Form, Input, Progress, Select, Space, message } from 'antd'
+
 import { useForm, Controller, SubmitHandler } from 'react-hook-form'
 import { IPrinter } from '@/entities/printer/api/printer.api.types'
 import { useAddPrinter } from '@/shared/hooks'
 import { useGetOfficesQuery } from '@/entities/app/api'
-import { useAddPrinterMutation } from '@/entities/printer/api'
+
 import { UploadTaskSnapshot, getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage'
 import { storage } from '@/shared/config/firebase/firebase-config'
 import { AddPrinterSelect } from '@/shared/components'
+import { AddPrinterImage } from '@/shared/ui/add-printer-image'
+import { useAppDispatch, useAppSelector } from '@/app/providers/store-provider/store.types'
+import { fileRemove, getImageLoaded } from '@/entities/printer/api/printer.slice'
+import { UploadChangeParam, UploadFile } from 'antd/es/upload'
+import { addPrinter } from '@/entities/printer/model/add-printer'
 
 type ProgressStatuses = 'normal' | 'exception' | 'active' | 'success'
 
 export const AddPrinterForm = () => {
+  const dispatch = useAppDispatch()
+
+  const { onChangeIp } = useAddPrinter()
+  const [showUploadList, setShowUploadList] = useState(true)
   const [showProgress, setShowProgress] = useState(false)
 
   const [progress, setProgress] = useState(0)
@@ -21,7 +30,7 @@ export const AddPrinterForm = () => {
 
   const { data: offices } = useGetOfficesQuery()
 
-  const [addPrinter] = useAddPrinterMutation()
+  const fileUpload = useAppSelector((state) => getImageLoaded(state))
 
   const office = offices && Object.keys(offices)
 
@@ -32,18 +41,17 @@ export const AddPrinterForm = () => {
     formState: { errors },
   } = useForm<IPrinter>()
 
-  const normFile = (e: any) => {
-    if (Array.isArray(e)) {
-      return e
-    }
-    return e?.fileList
-  }
-
   const ipRegex =
     /^(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])$/
 
-  const { onChange, onChangeIp, showUploadList, fileUpload, setFileUpload, setShowUploadList } =
-    useAddPrinter()
+  const onChange = useCallback((info: UploadChangeParam<UploadFile<any>>) => {
+    const { status } = info.file
+    setShowUploadList(true)
+
+    if (status === 'removed') {
+      dispatch(fileRemove())
+    }
+  }, [])
 
   const onFinish: SubmitHandler<IPrinter> = (data) => {
     if (fileUpload) {
@@ -70,15 +78,17 @@ export const AddPrinterForm = () => {
         },
         () => {
           getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-            addPrinter({
-              title: data.title,
-              image: downloadURL,
-              ip: data.ip,
-              office: data.office,
-              serialNumber: data.serialNumber,
-              xeroxNumber: data.xeroxNumber,
-              description: data.description,
-            })
+            dispatch(
+              addPrinter({
+                title: data.title,
+                image: downloadURL,
+                ip: data.ip,
+                office: data.office,
+                serialNumber: data.serialNumber,
+                xeroxNumber: data.xeroxNumber,
+                description: data.description,
+              }),
+            )
           })
           setUploadStatus('success')
           onReset()
@@ -90,7 +100,7 @@ export const AddPrinterForm = () => {
   }
   const onReset = () => {
     setShowProgress(false)
-    setFileUpload(null)
+    dispatch(fileRemove())
     setShowUploadList(false)
     reset()
   }
@@ -98,36 +108,11 @@ export const AddPrinterForm = () => {
   return (
     <Form name="printerInfo" onFinish={handleSubmit(onFinish)}>
       <Flex vertical gap="middle" align="center" style={{ width: '100%' }}>
-        <Form.Item
-          name="printerImage"
-          valuePropName="fileList"
-          getValueFromEvent={normFile}
-          style={{ width: 400 }}>
-          <Upload.Dragger
-            maxCount={1}
-            style={{ display: fileUpload?.size ? 'none' : '' }}
-            name="uploadFile"
-            type="select"
-            action={import.meta.env.VITE_HOST}
-            listType="picture"
-            accept=".jpg,.jpeg,.png,.webp"
-            beforeUpload={(file: RcFile) => {
-              setFileUpload(file)
-              return false
-            }}
-            onRemove={() => {
-              setShowUploadList(false)
-            }}
-            showUploadList={showUploadList}
-            onChange={(info) => onChange(info)}>
-            <p className="ant-upload-drag-icon">
-              <InboxOutlined />
-            </p>
-            <p className="ant-upload-text">Нажмите или перетащите файлы для загрузки</p>
-            <p className="ant-upload-hint">Можно загружать только один файл</p>
-          </Upload.Dragger>
-        </Form.Item>
-
+        <AddPrinterImage
+          showUploadList={showUploadList}
+          setShowUploadList={setShowUploadList}
+          onChange={onChange}
+        />
         <Flex
           align="center"
           style={{
