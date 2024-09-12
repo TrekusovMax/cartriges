@@ -30,13 +30,16 @@ export const Office = () => {
   const onEdit = () => {
     navigate(`${location.pathname}/edit`, { state: { location: location.pathname } })
   }
+  console.log(items)
 
   return (
     <>
       <Flex justify={'space-between'} align={'center'} wrap={'wrap'} style={{ padding: '0 50px' }}>
         {printerData &&
           items.map((elem, index) => (
-            <Link to={`${import.meta.env.VITE_HOST}/printer/${items[index]}`} key={index}>
+            <Link
+              to={`${import.meta.env.VITE_HOST}/printer/${items[index].serialNumber}`}
+              key={index}>
               <Card
                 hoverable
                 style={{ width: 300, marginTop: 20 }}

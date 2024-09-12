@@ -13,23 +13,23 @@ export const PrinterPage = () => {
   const navigate = useNavigate()
   const location = useLocation()
 
-  const { printer, office, id } = useParams()
+  const { id } = useParams()
   const { data: printerData } = useGetPrintersQuery()
 
   useEffect(() => {
     if (printerData) {
       if (id) {
-        setItems(printerData[id])
-      } else if (printer) {
-        setItems(
-          Object.values(printerData).filter(
-            (item) => item.title === printer && item.office === office,
-          ),
-        )
+        const data = Object.values(printerData).filter((item) => item.serialNumber == id)[0]
+        if (data) {
+          setItems(data ?? undefined)
+        } else {
+          navigate(`/`)
+        }
       }
     }
-  }, [printerData, office, printer])
+  }, [printerData])
 
+  console.log(items)
   const onEdit = () => {
     navigate(`${location.pathname}/edit`, { state: { location: location.pathname } })
   }
