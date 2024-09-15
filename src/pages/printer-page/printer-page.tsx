@@ -1,5 +1,7 @@
+import { useAppDispatch } from '@/app/providers/store-provider/store.types'
 import { useGetPrintersQuery } from '@/entities/printer/api'
 import { IPrinter } from '@/entities/printer/api/printer.api.types'
+import { deletePrinter } from '@/entities/printer/model'
 import { isPrinter } from '@/shared/functions'
 import { Loader } from '@/shared/ui/loader'
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons'
@@ -12,6 +14,7 @@ export const PrinterPage = () => {
   const [items, setItems] = useState<IPrinter[] | IPrinter>([])
   const navigate = useNavigate()
   const location = useLocation()
+  const dispatch = useAppDispatch()
 
   const { id } = useParams()
   const { data: printerData } = useGetPrintersQuery()
@@ -19,17 +22,17 @@ export const PrinterPage = () => {
   useEffect(() => {
     if (printerData) {
       if (id) {
-        const data = Object.values(printerData).filter((item) => item.serialNumber == id)[0]
+        const data = printerData[id]
         if (data) {
           setItems(data ?? undefined)
         } else {
-          navigate(`/`)
+          //navigate(`/`)
         }
       }
     }
   }, [printerData])
 
-  console.log(items)
+  //console.log(items)
   const onEdit = () => {
     navigate(`${location.pathname}/edit`, { state: { location: location.pathname } })
   }
@@ -37,7 +40,7 @@ export const PrinterPage = () => {
   return (
     <>
       <Flex justify={'space-around'} align={'center'} wrap={'wrap'} style={{ padding: '0 50px' }}>
-        {printerData ? (
+        {printerData && id ? (
           isPrinter(items) && (
             <Card
               hoverable
@@ -48,15 +51,14 @@ export const PrinterPage = () => {
                 <Popconfirm
                   title="Подтвердите удаление"
                   description="Вы действительно хотите удалить МФУ?"
-                  onConfirm={() => message.error('МФУ удалено')}
+                  onConfirm={() => {
+                    dispatch(deletePrinter(id))
+                    message.error('МФУ удалено')
+                    navigate(-1)
+                  }}
                   okText="Да"
                   cancelText="Нет">
-                  <DeleteOutlined
-                    style={{ color: 'red' }}
-                    key="delete"
-                    onClick={() => console.log('delete')}
-                  />
-                  ,
+                  <DeleteOutlined style={{ color: 'red' }} key="delete" />,
                 </Popconfirm>,
               ]}>
               <Meta title={items.title} description={items.description} />

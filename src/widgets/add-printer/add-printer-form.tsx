@@ -14,7 +14,7 @@ import { AddPrinterImage } from '@/shared/ui/add-printer-image'
 import { useAppDispatch, useAppSelector } from '@/app/providers/store-provider/store.types'
 import { fileRemove, getImageLoaded } from '@/entities/printer/api/printer.slice'
 import { UploadChangeParam, UploadFile } from 'antd/es/upload'
-import { addPrinter } from '@/entities/printer/model/add-printer'
+import { addPrinter } from '@/entities/printer/model'
 
 type ProgressStatuses = 'normal' | 'exception' | 'active' | 'success'
 

@@ -21,7 +21,22 @@ export const printerApi = createApi({
       }),
       invalidatesTags: ['printers'],
     }),
+    editPrinter: build.mutation<IPrinter, IPrinter>({
+      query: (body) => ({
+        url: `printers/${body.id}.json`,
+        method: 'PATCH',
+        body,
+      }),
+      invalidatesTags: ['printers'],
+    }),
+    deletePrinter: build.mutation<void, string>({
+      query: (id) => ({
+        url: `printers/${id}.json`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['printers'],
+    }),
   }),
 })
 
-export const { useGetPrintersQuery, useAddPrinterMutation } = printerApi
+export const { useGetPrintersQuery, useAddPrinterMutation, useDeletePrinterMutation } = printerApi

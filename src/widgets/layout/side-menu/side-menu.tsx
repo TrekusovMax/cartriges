@@ -21,56 +21,67 @@ export const SideMenu = () => {
   let openMenuKey = ''
 
   useEffect(() => {
-    if (officeData && printerData) {
-      const printerDataValues = Object.values(printerData)
+    if (officeData) {
       const menuKeys = Object.keys(officeData)
       const menuValues = Object.values(officeData).map((i) => i.name)
-
-      menuKeys.map((item) => {
-        sideMenuItems[officeData[item].name] = []
-        const subMenu = new Set<string>()
-        printerDataValues.map((printer) => {
-          if (printer.office === item) {
-            subMenu.add(printer.title)
-          }
-          sideMenuItems[officeData[item].name] = Array.from(subMenu)
+      if (printerData) {
+        const printerDataValues = Object.values(printerData)
+        menuKeys.map((item) => {
+          sideMenuItems[officeData[item].name] = []
+          const subMenu = new Set<string>()
+          printerDataValues.map((printer) => {
+            if (printer.office === item) {
+              subMenu.add(printer.title)
+            }
+            sideMenuItems[officeData[item].name] = Array.from(subMenu)
+          })
         })
-      })
 
-      const printersCount = Object.keys(printerData).length
-      const items: MenuProps['items'] = menuValues.map((item, index) => {
-        const printersInOfficeCount = Object.keys(sideMenuItems[item]).length
+        const printersCount = Object.keys(printerData).length
+        const items: MenuProps['items'] = menuValues.map((item, index) => {
+          const printersInOfficeCount = Object.keys(sideMenuItems[item]).length
 
-        return {
-          key: `${item}`,
-          label: `${item}`,
-          children: new Array(printersInOfficeCount).fill(null).map((_, j) => {
-            const subKey = index * printersCount + j + 1
-            return {
-              key: subKey,
-              label: (
-                <Link
-                  to={`${import.meta.env.VITE_HOST}/office/${menuKeys[index]}/${
-                    sideMenuItems[item][j]
-                  }`}>
-                  {sideMenuItems[item][j]}
-                </Link>
-              ),
-              icon: React.createElement(PrinterOutlined),
-            }
-          }),
-          onTitleClick: (title) => {
-            if (title.key === menuValues[index]) {
-              setOpenMenuIndex([menuValues[index]])
-            }
-          },
+          return {
+            key: `${item}`,
+            label: `${item}`,
+            children: new Array(printersInOfficeCount).fill(null).map((_, j) => {
+              const subKey = index * printersCount + j + 1
+              return {
+                key: subKey,
+                label: (
+                  <Link
+                    to={`${import.meta.env.VITE_HOST}/office/${menuKeys[index]}/${
+                      sideMenuItems[item][j]
+                    }`}>
+                    {sideMenuItems[item][j]}
+                  </Link>
+                ),
+                icon: React.createElement(PrinterOutlined),
+              }
+            }),
+            onTitleClick: (title) => {
+              if (title.key === menuValues[index]) {
+                setOpenMenuIndex([menuValues[index]])
+              }
+            },
+          }
+        })
+        setMenuItems(items)
+        if (office && officeData[office]?.name) {
+          setOpenMenuIndex([officeData[office].name])
+        } else {
+          setOpenMenuIndex([])
         }
-      })
-      setMenuItems(items)
-      if (office && officeData[office]?.name) {
-        setOpenMenuIndex([officeData[office].name])
       } else {
-        setOpenMenuIndex([])
+        const items: MenuProps['items'] = menuValues.map((item, index) => {
+          return {
+            key: `${item}`,
+            label: (
+              <Link to={`${import.meta.env.VITE_HOST}/office/${menuKeys[index]}`}>{item}</Link>
+            ),
+          }
+        })
+        setMenuItems(items)
       }
     }
   }, [officeData, office, printerData])
