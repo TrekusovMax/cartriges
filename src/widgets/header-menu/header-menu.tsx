@@ -12,7 +12,8 @@ interface IHeaderMenu {
 export const HeaderMenu = () => {
   const [menuItems, setMenuItems] = useState<MenuProps['items']>([])
   const headerData: IHeaderMenu[] = [
-    { title: 'Добавить элемент', path: '/add-item' },
+    { title: 'Добавить МФУ', path: '/add-item' },
+    { title: 'Добавить картридж', path: '/add-cartrige' },
     { title: 'Отчёт', path: '/report' },
     { title: 'Настройки', path: '/settings' },
   ]
@@ -35,7 +36,12 @@ export const HeaderMenu = () => {
 
   return (
     <>
-      <Menu theme="dark" mode="horizontal" items={menuItems} style={{ flex: 1, minWidth: 0 }} />
+      <Menu
+        theme="dark"
+        mode="horizontal"
+        items={menuItems}
+        style={{ flex: 1, minWidth: 0, color: 'white' }}
+      />
     </>
   )
 }

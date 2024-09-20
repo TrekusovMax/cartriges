@@ -1,11 +1,24 @@
 import { useCallback, useState } from 'react'
 
-import { Button, Flex, Form, Input, Progress, Select, Space, message } from 'antd'
+import {
+  Badge,
+  Button,
+  Card,
+  Flex,
+  Form,
+  Image,
+  Input,
+  Progress,
+  Select,
+  Space,
+  message,
+} from 'antd'
 
 import { useForm, Controller, SubmitHandler } from 'react-hook-form'
 import { IPrinter } from '@/entities/printer/api/printer.api.types'
 import { useAddPrinter } from '@/shared/hooks'
 import { useGetOfficesQuery } from '@/entities/app/api'
+import { useGetPrintersQuery } from '@/entities/printer/api'
 
 import { UploadTaskSnapshot, getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage'
 import { storage } from '@/shared/config/firebase/firebase-config'
@@ -16,6 +29,7 @@ import { fileRemove, getImageLoaded } from '@/entities/printer/api/printer.slice
 import { UploadChangeParam, UploadFile } from 'antd/es/upload'
 import { addPrinter } from '@/entities/printer/model'
 import { ipRegex } from '@/shared/functions/CheckIp'
+import { CloseCircleOutlined } from '@ant-design/icons'
 
 type ProgressStatuses = 'normal' | 'exception' | 'active' | 'success'
 
@@ -25,14 +39,14 @@ export const AddPrinterForm = () => {
   const { onChangeIp } = useAddPrinter()
   const [showUploadList, setShowUploadList] = useState(true)
   const [showProgress, setShowProgress] = useState(false)
-
+  const [showImage, setShowImage] = useState(false)
   const [progress, setProgress] = useState(0)
+  const [imgUrl, setImgUrl] = useState('')
   const [uploadStatus, setUploadStatus] = useState<ProgressStatuses>('active')
 
   const { data: offices } = useGetOfficesQuery()
-
+  const { data: printers } = useGetPrintersQuery()
   const fileUpload = useAppSelector((state) => getImageLoaded(state))
-
   const office = offices && Object.keys(offices)
 
   const {
@@ -78,13 +92,8 @@ export const AddPrinterForm = () => {
           getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
             dispatch(
               addPrinter({
-                title: data.title,
+                ...data,
                 image: downloadURL,
-                ip: data.ip,
-                office: data.office,
-                serialNumber: data.serialNumber,
-                xeroxNumber: data.xeroxNumber,
-                description: data.description,
               }),
             )
           })
@@ -102,15 +111,40 @@ export const AddPrinterForm = () => {
     setShowUploadList(false)
     reset()
   }
+  const onChangeShowImage = (val: string) => {
+    setShowImage(true)
+    if (printers) {
+      const url = Object.values(printers).filter((item) => item.title === val)
+      if (url.length) {
+        setImgUrl(url[0].image)
+      } else {
+        setShowImage(false)
+      }
+    }
+  }
 
   return (
     <Form name="printerInfo" onFinish={handleSubmit(onFinish)}>
       <Flex vertical gap="middle" align="center" style={{ width: '100%' }}>
-        <AddPrinterImage
-          showUploadList={showUploadList}
-          setShowUploadList={setShowUploadList}
-          onChange={onChange}
-        />
+        {!showImage ? (
+          <AddPrinterImage
+            showUploadList={showUploadList}
+            setShowUploadList={setShowUploadList}
+            onChange={onChange}
+          />
+        ) : (
+          <Badge
+            count={
+              <CloseCircleOutlined
+                style={{ color: '#f5222d', cursor: 'pointer' }}
+                onClick={() => setShowImage(false)}
+              />
+            }>
+            <Card style={{ width: 240 }}>
+              <Image preview={false} src={imgUrl} />
+            </Card>
+          </Badge>
+        )}
         <Flex
           align="center"
           style={{
@@ -125,7 +159,12 @@ export const AddPrinterForm = () => {
             validateStatus={errors.title ? 'error' : ''}
             help={errors.title ? errors.title.message : ''}
             style={{ width: '100%' }}>
-            <AddPrinterSelect controllerName="title" control={control} />
+            <AddPrinterSelect
+              controllerName="title"
+              control={control}
+              showImage={onChangeShowImage}
+              printers={printers}
+            />
           </Form.Item>
           <Form.Item
             label="Серийный номер"

@@ -19,11 +19,6 @@ export const Office = () => {
         pData[key].id = key
       })
       if (office) {
-        /*const elems = Object.values(printerData)  .map((elem, index) => [
-          { ...elem, id: printerData[index] },
-        ]) */
-        /* console.log(elems)
-        console.log(printerData) */
         setItems(Object.values(pData).filter((item) => item.office === office))
       } else if (printer) {
         setItems(Object.values(pData).filter((item) => item.title === printer))
@@ -35,7 +30,7 @@ export const Office = () => {
 
   return (
     <>
-      <Flex justify={'space-between'} align={'center'} wrap={'wrap'} style={{ padding: '0 50px' }}>
+      <Flex justify={'space-around'} align={'center'} wrap={'wrap'} style={{ padding: '0 50px' }}>
         {printerData &&
           items.map((elem, index) => (
             <Link to={`${import.meta.env.VITE_HOST}/printer/${items[index].id}`} key={index}>

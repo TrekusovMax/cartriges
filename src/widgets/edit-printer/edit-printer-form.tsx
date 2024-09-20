@@ -2,18 +2,17 @@ import { useAppDispatch } from '@/app/providers/store-provider/store.types'
 import { useGetOfficesQuery } from '@/entities/app/api'
 import { useFindPrinterQuery } from '@/entities/printer/api'
 import { IPrinter } from '@/entities/printer/api/printer.api.types'
-import { AddPrinterSelect } from '@/shared/components'
 import { ipRegex } from '@/shared/functions/CheckIp'
 import { useAddPrinter } from '@/shared/hooks'
 import { Button, Card, Flex, Form, Image, Input, Select, Space, message } from 'antd'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm, Controller, SubmitHandler } from 'react-hook-form'
-import { useLoaderData, useLocation, useNavigate, useParams } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { Col, Row, Popconfirm } from 'antd'
 import { deletePrinter, editPrinter } from '@/entities/printer/model'
 import { Loader } from '@/shared/ui/loader'
 
-export const EditPrinterForm = React.memo(() => {
+export const EditPrinterForm = () => {
   const { id } = useParams()
   const navigate = useNavigate()
   const location = useLocation()
@@ -22,7 +21,7 @@ export const EditPrinterForm = React.memo(() => {
 
   const [data, setData] = useState<IPrinter>()
   const { data: offices } = useGetOfficesQuery()
-  const { data: printerData } = useFindPrinterQuery(id!)
+  const { data: printerData, refetch } = useFindPrinterQuery(id!)
 
   const office = offices && Object.keys(offices)
 
@@ -35,6 +34,7 @@ export const EditPrinterForm = React.memo(() => {
       dispatch(editPrinter({ printer: editData, id: id }))
         .then(() => {
           message.success('Данные изменены')
+          refetch()
           navigate(location.state.location)
         })
         .catch(() => {
@@ -177,4 +177,4 @@ export const EditPrinterForm = React.memo(() => {
   ) : (
     <Loader />
   )
-})
+}
