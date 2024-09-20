@@ -9,7 +9,7 @@ export const MainLayout = () => {
   return (
     <Layout
       style={{
-        height: '100shv',
+        height: 'calc(100% - 20px)',
         display: 'flex',
         justifyContent: 'space-between',
       }}>

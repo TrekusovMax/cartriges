@@ -9,9 +9,10 @@ import type { Control } from 'react-hook-form'
 type params = {
   controllerName: keyof IPrinter
   control: Control<IPrinter, any>
+  value?: string
 }
 
-export const AddPrinterSelect = ({ controllerName, control }: params) => {
+export const AddPrinterSelect = ({ controllerName, control, value }: params) => {
   const inputRef = useRef<InputRef>(null)
   const [items, setItems] = useState<string[]>([])
   const [name, setName] = useState('')
@@ -51,7 +52,7 @@ export const AddPrinterSelect = ({ controllerName, control }: params) => {
     <Controller
       name={controllerName}
       control={control}
-      defaultValue=""
+      defaultValue={value}
       rules={{ required: 'Наименование не должно быть пустым' }}
       render={({ field }) => (
         <Select
@@ -60,20 +61,26 @@ export const AddPrinterSelect = ({ controllerName, control }: params) => {
           dropdownRender={(menu) => (
             <>
               {menu}
-              <Divider style={{ margin: '8px 0' }} />
-              <Space style={{ padding: '0 8px 4px' }}>
-                <Input
-                  style={{ width: '100%' }}
-                  placeholder="Введите название"
-                  ref={inputRef}
-                  value={name}
-                  onChange={onNameChange}
-                  onKeyDown={(e) => e.stopPropagation()}
-                />
-              </Space>
-              <Button type="text" icon={<PlusOutlined />} onClick={addItem}>
-                Добавить МФУ
-              </Button>
+              {!value ? (
+                <>
+                  <Divider style={{ margin: '8px 0' }} />
+                  <Space style={{ padding: '0 8px 4px' }}>
+                    <Input
+                      style={{ width: '100%' }}
+                      placeholder="Введите название"
+                      ref={inputRef}
+                      value={name}
+                      onChange={onNameChange}
+                      onKeyDown={(e) => e.stopPropagation()}
+                    />
+                  </Space>
+                  <Button type="text" icon={<PlusOutlined />} onClick={addItem}>
+                    Добавить МФУ
+                  </Button>
+                </>
+              ) : (
+                <></>
+              )}
             </>
           )}
           options={items.map((item) => ({ label: item, value: item }))}

@@ -1,3 +1,4 @@
 import { deletePrinter } from './delete-printer'
 import { addPrinter } from './add-printer'
-export { addPrinter, deletePrinter }
+import { editPrinter } from './edit-printer'
+export { addPrinter, deletePrinter, editPrinter }

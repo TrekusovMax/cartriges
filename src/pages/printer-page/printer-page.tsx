@@ -25,8 +25,6 @@ export const PrinterPage = () => {
         const data = printerData[id]
         if (data) {
           setItems(data ?? undefined)
-        } else {
-          //navigate(`/`)
         }
       }
     }

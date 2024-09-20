@@ -15,6 +15,7 @@ import { useAppDispatch, useAppSelector } from '@/app/providers/store-provider/s
 import { fileRemove, getImageLoaded } from '@/entities/printer/api/printer.slice'
 import { UploadChangeParam, UploadFile } from 'antd/es/upload'
 import { addPrinter } from '@/entities/printer/model'
+import { ipRegex } from '@/shared/functions/CheckIp'
 
 type ProgressStatuses = 'normal' | 'exception' | 'active' | 'success'
 
@@ -40,9 +41,6 @@ export const AddPrinterForm = () => {
     reset,
     formState: { errors },
   } = useForm<IPrinter>()
-
-  const ipRegex =
-    /^(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])$/
 
   const onChange = useCallback((info: UploadChangeParam<UploadFile<any>>) => {
     const { status } = info.file

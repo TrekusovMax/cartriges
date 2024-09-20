@@ -1,10 +1,5 @@
-import { useLocation, useNavigate } from 'react-router-dom'
+import { EditPrinterForm } from '@/widgets/edit-printer'
 
 export const EditPage = () => {
-  const navigate = useNavigate()
-  const location = useLocation()
-
-  console.log(location.state)
-
-  return <div>{location.pathname}</div>
+  return <EditPrinterForm />
 }

@@ -15,7 +15,7 @@ export const Content = () => {
           padding: '24px 0',
           background: colorBgContainer,
           borderRadius: 10,
-          minHeight: 700,
+          minHeight: 800,
         }}>
         <Sider />
         <Layout.Content style={{ padding: '0 24px', minHeight: 280 }}>

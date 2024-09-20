@@ -45,6 +45,7 @@ export const RoutesProvider = () => {
       </Route>
 
       <Route path="/printer" element={<MainLayout />}>
+        <Route index element={<Navigate to="/" />} />
         <Route path=":id" element={<Suspense fallback={<Loader />}>{<PrinterPage />}</Suspense>} />
         <Route
           path=":id/edit"

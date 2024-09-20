@@ -13,6 +13,9 @@ export const printerApi = createApi({
       }),
       providesTags: ['printers'],
     }),
+    findPrinter: build.query<IPrinter, string>({
+      query: (id) => `printers/${id}.json`,
+    }),
     addPrinter: build.mutation<IPrinter, IPrinter>({
       query: (body) => ({
         url: 'printers.json',
@@ -21,11 +24,11 @@ export const printerApi = createApi({
       }),
       invalidatesTags: ['printers'],
     }),
-    editPrinter: build.mutation<IPrinter, IPrinter>({
-      query: (body) => ({
-        url: `printers/${body.id}.json`,
+    editPrinter: build.mutation<IPrinter, { printer: IPrinter; id: string }>({
+      query: ({ printer, id }) => ({
+        url: `printers/${id}.json`,
         method: 'PATCH',
-        body,
+        body: printer,
       }),
       invalidatesTags: ['printers'],
     }),
@@ -39,4 +42,9 @@ export const printerApi = createApi({
   }),
 })
 
-export const { useGetPrintersQuery, useAddPrinterMutation, useDeletePrinterMutation } = printerApi
+export const {
+  useGetPrintersQuery,
+  useAddPrinterMutation,
+  useDeletePrinterMutation,
+  useFindPrinterQuery,
+} = printerApi

@@ -10,14 +10,10 @@ import { localStorageService } from '@/shared/services/localStorage.service'
 import { userLogout, userRefresh } from '@/entities/user/model/user.selectors' */
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: import.meta.env.VITE_FIREBASE_DATABASE_URL, //'https://cartrige-accounting-default-rtdb.europe-west1.firebasedatabase.app/',
+  baseUrl: import.meta.env.VITE_FIREBASE_DATABASE_URL,
   prepareHeaders: (headers) => {
     headers.append('Content-Type', 'application/json')
     headers.append('Accept', 'application/json')
-    headers.append('Access-Control-Allow-Origin', '*')
-    headers.append('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, DELETE')
-    headers.append('Access-Control-Allow-Headers', 'Content-Type , Authorization, X-Requested-With')
-    headers.append('Access-Control-Max-Age', '3600')
 
     return headers
   },
