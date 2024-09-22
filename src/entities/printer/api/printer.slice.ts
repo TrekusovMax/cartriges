@@ -13,7 +13,6 @@ const initialState: IFile = {
 export const printerSlice = createSlice({
   name: 'printer',
   initialState,
-  //extraReducers: (builder) => {},
   reducers: {
     uploadFile: (state, action: PayloadAction<RcFile>) => {
       state.fileUpload = action.payload

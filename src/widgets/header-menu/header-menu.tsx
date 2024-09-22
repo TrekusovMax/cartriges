@@ -12,7 +12,7 @@ interface IHeaderMenu {
 export const HeaderMenu = () => {
   const [menuItems, setMenuItems] = useState<MenuProps['items']>([])
   const headerData: IHeaderMenu[] = [
-    { title: 'Добавить МФУ', path: '/add-item' },
+    { title: 'Добавить МФУ', path: '/add-printer' },
     { title: 'Добавить картридж', path: '/add-cartrige' },
     { title: 'Отчёт', path: '/report' },
     { title: 'Настройки', path: '/settings' },

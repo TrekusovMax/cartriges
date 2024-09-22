@@ -1,4 +1,5 @@
 import { appApi } from '@/entities/app/api'
+import { cartrigeApi } from '@/entities/cartrige/api/cartrige.api'
 import { printerApi } from '@/entities/printer/api'
 
 import { combineSlices, configureStore } from '@reduxjs/toolkit'
@@ -10,6 +11,7 @@ export const rootReducer = combineSlices({
   //combineReducers({
   [appApi.reducerPath]: appApi.reducer,
   [printerApi.reducerPath]: printerApi.reducer,
+  [cartrigeApi.reducerPath]: cartrigeApi.reducer,
   //[printerSlice.name]: printerSlice.reducer,
   //[appSlice.name]: appSlice.reducer,
   /*   userReducer,
@@ -24,6 +26,6 @@ export const setupStore = configureStore({
         extraArgument: {},
       },
       serializableCheck: false,
-    }).concat([appApi.middleware, printerApi.middleware])
+    }).concat([appApi.middleware, printerApi.middleware, cartrigeApi.middleware])
   },
 })

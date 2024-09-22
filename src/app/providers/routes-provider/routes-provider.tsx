@@ -9,6 +9,7 @@ const OfficePage = lazy(() => import('@/pages/office'))
 const PrinterPage = lazy(() => import('@/pages/printer-page'))
 const PrintersListPage = lazy(() => import('@/pages/printers-list-page'))
 const AddPrinter = lazy(() => import('@/pages/add-printer'))
+const AddCartrige = lazy(() => import('@/pages/add-cartrige'))
 const EditPage = lazy(() => import('@/pages/edit-page'))
 /* const UserProfile = lazy(() => import('@/pages/profile'))
 const LoginForm = lazy(() => import('@/pages/login'))
@@ -40,8 +41,11 @@ export const RoutesProvider = () => {
         />
       </Route>
 
-      <Route path="/add-item" element={<MainLayout />}>
+      <Route path="/add-printer" element={<MainLayout />}>
         <Route index element={<Suspense fallback={<Loader />}>{<AddPrinter />}</Suspense>} />
+      </Route>
+      <Route path="/add-cartrige" element={<MainLayout />}>
+        <Route index element={<Suspense fallback={<Loader />}>{<AddCartrige />}</Suspense>} />
       </Route>
 
       <Route path="/printer" element={<MainLayout />}>

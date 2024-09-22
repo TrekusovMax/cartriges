@@ -17,7 +17,7 @@ export const SideMenu = () => {
   const { data: printerData } = useGetPrintersQuery()
   const { office } = useParams()
   const sideMenuItems: IMenuItems = {}
-  const location = useNavigate()
+
   let openMenuKey = ''
 
   useEffect(() => {
@@ -98,7 +98,7 @@ export const SideMenu = () => {
           items={menuItems}
         />
       ) : (
-        <Menu mode="inline" style={{ height: '100%' }} items={menuItems} />
+        <Menu mode="inline" style={{ height: '100%', border: 'none' }} items={menuItems} />
       )}
     </>
   )

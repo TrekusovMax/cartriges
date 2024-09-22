@@ -1,5 +1,4 @@
 export interface DBOffices {
-  //items: [{ name: string; bucket: string }]
   [key: string]: IPrinter
 }
 export interface IPrinter {

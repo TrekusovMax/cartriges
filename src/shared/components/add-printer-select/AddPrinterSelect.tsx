@@ -8,18 +8,11 @@ import type { Control } from 'react-hook-form'
 type params = {
   controllerName: keyof IPrinter
   control: Control<IPrinter, any>
-
-  showImage?: (val: string) => void
   printers: DBOffices | undefined
+  showImage?: (val: string) => void
 }
 
-export const AddPrinterSelect = ({
-  controllerName,
-  control,
-
-  showImage,
-  printers,
-}: params) => {
+export const AddPrinterSelect = ({ controllerName, control, printers, showImage }: params) => {
   const inputRef = useRef<InputRef>(null)
   const [items, setItems] = useState<string[]>([])
   const [name, setName] = useState('')
@@ -33,7 +26,7 @@ export const AddPrinterSelect = ({
         printerList.add(printers[k].title)
       })
 
-      setItems(Array.from(printerList))
+      setItems(Array.from(printerList).sort((a, b) => a.localeCompare(b)))
     }
   }, [printers])
 
@@ -66,14 +59,13 @@ export const AddPrinterSelect = ({
           {...field}
           onSelect={(val) => {
             showImage!(val)
-            setName(val)
-            console.log(val)
+            setName('')
           }}
-          value={name}
           placeholder="Выберите МФУ или добавте новую"
           dropdownRender={(menu) => (
             <>
               {menu}
+
               <>
                 <Divider style={{ margin: '8px 0' }} />
                 <Space style={{ padding: '0 8px 4px' }}>

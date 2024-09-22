@@ -18,7 +18,12 @@ export const Content = () => {
           minHeight: 800,
         }}>
         <Sider />
-        <Layout.Content style={{ padding: '0 24px', minHeight: 280 }}>
+        <Layout.Content
+          style={{
+            padding: '0 24px',
+            minHeight: 280,
+            borderInlineStart: '1px solid rgba(5, 5, 5, 0.06)',
+          }}>
           <Outlet />
         </Layout.Content>
       </Layout>
