@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useState, useRef } from 'react'
 
 import {
   Badge,
@@ -35,6 +35,8 @@ type ProgressStatuses = 'normal' | 'exception' | 'active' | 'success'
 
 export const AddPrinterForm = () => {
   const dispatch = useAppDispatch()
+
+  const imageSelected = useRef<boolean>(false)
 
   const { onChangeIp } = useAddPrinter()
   const [showUploadList, setShowUploadList] = useState(true)
@@ -109,6 +111,7 @@ export const AddPrinterForm = () => {
     setShowProgress(false)
     dispatch(fileRemove())
     setShowUploadList(false)
+    imageSelected.current = false
     reset()
   }
   const onChangeShowImage = (val: string) => {
@@ -117,6 +120,7 @@ export const AddPrinterForm = () => {
       const url = Object.values(printers).filter((item) => item.title === val)
       if (url.length) {
         setImgUrl(url[0].image)
+        imageSelected.current = true
       } else {
         setShowImage(false)
       }
@@ -137,7 +141,10 @@ export const AddPrinterForm = () => {
             count={
               <CloseCircleOutlined
                 style={{ color: '#f5222d', cursor: 'pointer' }}
-                onClick={() => setShowImage(false)}
+                onClick={() => {
+                  setShowImage(false)
+                  imageSelected.current = false
+                }}
               />
             }>
             <Card style={{ width: 240 }}>
@@ -249,7 +256,9 @@ export const AddPrinterForm = () => {
         <Flex align="center" justify="space-between">
           <Space>
             <Button
-              disabled={fileUpload && !Object.keys(errors).length ? false : true}
+              disabled={
+                (fileUpload || imageSelected.current) && !Object.keys(errors).length ? false : true
+              }
               type="primary"
               htmlType="submit">
               Добавить
