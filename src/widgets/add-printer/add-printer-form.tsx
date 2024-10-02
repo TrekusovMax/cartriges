@@ -68,6 +68,16 @@ export const AddPrinterForm = () => {
   }, [])
 
   const onFinish: SubmitHandler<IPrinter> = (data) => {
+    if (imageSelected.current) {
+      dispatch(
+        addPrinter({
+          ...data,
+          image: imgUrl,
+        }),
+      )
+      onReset()
+      message.success('Принтер добавлен')
+    }
     if (fileUpload) {
       setShowProgress(true)
       const imageRef = ref(storage, `printers/ ${fileUpload.name}`)
@@ -111,6 +121,7 @@ export const AddPrinterForm = () => {
     setShowProgress(false)
     dispatch(fileRemove())
     setShowUploadList(false)
+    setShowImage(false)
     imageSelected.current = false
     reset()
   }
