@@ -44,7 +44,6 @@ export const HeaderMenu = () => {
       if (menuPath.indexOf(location.pathname) < 0) {
         for (let i of currMenuItem.current.menu.list.children) {
           SetMenuIndex(null)
-          //console.log(currMenuItem.current.menu.list.children.item(menuIndex))
           i.classList.remove('ant-menu-item-selected')
         }
       } else {
