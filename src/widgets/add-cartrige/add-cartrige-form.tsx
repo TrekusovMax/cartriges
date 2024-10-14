@@ -25,6 +25,7 @@ export const AddCartrigeForm = () => {
     handleSubmit,
     reset,
     formState: { errors },
+    watch,
   } = useForm<ICartrige>()
 
   const onFinish: SubmitHandler<ICartrige> = (data) => {
@@ -49,6 +50,7 @@ export const AddCartrigeForm = () => {
       setItems(Array.from(printerList).sort((a, b) => a.localeCompare(b)))
     }
   }, [printers])
+  const printer = watch('printer')
 
   return (
     <Form name="add-cartrige-form" onFinish={handleSubmit(onFinish)}>
@@ -109,7 +111,7 @@ export const AddCartrigeForm = () => {
               )}
             />
           </Form.Item>
-          {cartrige === 'Тонер' && (
+          {(cartrige === 'Тонер' || (cartrige === 'Картридж' && printer.includes('7225'))) && (
             <Form.Item
               label="Цвет"
               validateStatus={errors.type ? 'error' : ''}

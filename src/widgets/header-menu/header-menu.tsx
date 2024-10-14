@@ -62,11 +62,6 @@ export const HeaderMenu = () => {
   return (
     <>
       <Menu
-        onMouseOverCapture={(e) => {
-          console.log(e)
-
-          return null
-        }}
         ref={currMenuItem}
         theme="dark"
         mode="horizontal"

@@ -4,7 +4,7 @@ import { useFindPrinterQuery } from '@/entities/printer/api'
 import { IPrinter } from '@/entities/printer/api/printer.api.types'
 import { ipRegex } from '@/shared/functions/CheckIp'
 import { useAddPrinter } from '@/shared/hooks'
-import { Button, Card, Flex, Form, Image, Input, Select, Space, message } from 'antd'
+import { Button, Card, Checkbox, Flex, Form, Image, Input, Select, Space, message } from 'antd'
 import { useEffect, useState } from 'react'
 import { useForm, Controller, SubmitHandler } from 'react-hook-form'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
@@ -19,6 +19,7 @@ export const EditPrinterForm = () => {
   const dispatch = useAppDispatch()
   const { onChangeIp } = useAddPrinter()
 
+  const [checkedField, setCheckedField] = useState(false)
   const [data, setData] = useState<IPrinter>()
   const { data: offices } = useGetOfficesQuery()
   const { data: printerData, refetch } = useFindPrinterQuery(id!)
@@ -26,11 +27,16 @@ export const EditPrinterForm = () => {
   const office = offices && Object.keys(offices)
 
   useEffect(() => {
-    printerData && setData(printerData)
+    if (printerData) {
+      setData(printerData)
+      setCheckedField(printerData.isColor)
+    }
   }, [printerData])
 
   const onFinish: SubmitHandler<IPrinter> = (editData) => {
     if (id) {
+      editData.isColor = checkedField
+
       dispatch(editPrinter({ printer: editData, id: id }))
         .then(() => {
           message.success('Данные изменены')
@@ -139,6 +145,24 @@ export const EditPrinterForm = () => {
                   defaultValue={data.description}
                   rules={{ required: 'Поле не может быть пустым' }}
                   render={({ field }) => <Input {...field} />}
+                />
+              </Form.Item>
+              <Form.Item
+                label="Цветное МФУ"
+                validateStatus={errors.serialNumber ? 'error' : ''}
+                help={errors.serialNumber ? errors.serialNumber.message : ''}
+                style={{ width: '100%' }}>
+                <Controller
+                  name="isColor"
+                  control={control}
+                  render={() => (
+                    <Checkbox
+                      defaultChecked={checkedField}
+                      onChange={(e) => {
+                        setCheckedField(e.target.checked)
+                      }}
+                    />
+                  )}
                 />
               </Form.Item>
             </Flex>

@@ -12,6 +12,7 @@ import {
   Select,
   Space,
   message,
+  Checkbox,
 } from 'antd'
 
 import { useForm, Controller, SubmitHandler } from 'react-hook-form'
@@ -39,6 +40,7 @@ export const AddPrinterForm = () => {
   const imageSelected = useRef<boolean>(false)
 
   const { onChangeIp } = useAddPrinter()
+  const [checkedField, setCheckedField] = useState(false)
   const [showUploadList, setShowUploadList] = useState(true)
   const [showProgress, setShowProgress] = useState(false)
   const [showImage, setShowImage] = useState(false)
@@ -68,6 +70,8 @@ export const AddPrinterForm = () => {
   }, [])
 
   const onFinish: SubmitHandler<IPrinter> = (data) => {
+    data.isColor = checkedField
+
     if (imageSelected.current) {
       dispatch(
         addPrinter({
@@ -122,6 +126,7 @@ export const AddPrinterForm = () => {
     dispatch(fileRemove())
     setShowUploadList(false)
     setShowImage(false)
+    setCheckedField(false)
     imageSelected.current = false
     reset()
   }
@@ -184,6 +189,7 @@ export const AddPrinterForm = () => {
               printers={printers}
             />
           </Form.Item>
+
           <Form.Item
             label="Серийный номер"
             validateStatus={errors.serialNumber ? 'error' : ''}
@@ -261,6 +267,24 @@ export const AddPrinterForm = () => {
               defaultValue=""
               rules={{ required: 'Поле не может быть пустым' }}
               render={({ field }) => <Input {...field} />}
+            />
+          </Form.Item>
+          <Form.Item
+            label="Цветное МФУ"
+            validateStatus={errors.serialNumber ? 'error' : ''}
+            help={errors.serialNumber ? errors.serialNumber.message : ''}
+            style={{ width: '100%' }}>
+            <Controller
+              name="isColor"
+              control={control}
+              render={() => (
+                <Checkbox
+                  defaultChecked={checkedField}
+                  onChange={(e) => {
+                    setCheckedField(e.target.checked)
+                  }}
+                />
+              )}
             />
           </Form.Item>
         </Flex>
