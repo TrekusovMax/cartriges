@@ -7,6 +7,7 @@ import { useGetPrintersQuery } from '@/entities/printer/api'
 import { useAppDispatch } from '@/app/providers/store-provider/store.types'
 import { Color, ICartrige, type cartrigeType } from '@/entities/cartrige/api/cartrige.api.types'
 import { addCartrige } from '@/entities/cartrige/model'
+import { IPrinter } from '@/entities/printer/api/printer.api.types'
 
 export const AddCartrigeForm = () => {
   const dispatch = useAppDispatch()
@@ -19,13 +20,13 @@ export const AddCartrigeForm = () => {
   const cartrigeType: cartrigeType[] = ['Тонер', 'Картридж', 'Контейнер отработаного тонера']
 
   const [cartrige, setCartrige] = useState<cartrigeType>('Тонер')
+  const [currentPrinter, setCurrentPrinter] = useState<IPrinter>()
 
   const {
     control,
     handleSubmit,
     reset,
     formState: { errors },
-    watch,
   } = useForm<ICartrige>()
 
   const onFinish: SubmitHandler<ICartrige> = (data) => {
@@ -40,8 +41,8 @@ export const AddCartrigeForm = () => {
 
   useEffect(() => {
     if (printers) {
-      const dataKeys = Object.keys(printers)
       const printerList = new Set<string>()
+      const dataKeys = Object.keys(printers)
 
       dataKeys.map((k: string) => {
         printerList.add(printers[k].title)
@@ -50,7 +51,6 @@ export const AddCartrigeForm = () => {
       setItems(Array.from(printerList).sort((a, b) => a.localeCompare(b)))
     }
   }, [printers])
-  const printer = watch('printer')
 
   return (
     <Form name="add-cartrige-form" onFinish={handleSubmit(onFinish)}>
@@ -72,6 +72,10 @@ export const AddCartrigeForm = () => {
                   placeholder="Выберите МФУ"
                   dropdownRender={(menu) => <>{menu}</>}
                   options={Object.values(items).map((item) => ({ label: item, value: item }))}
+                  onSelect={(e) =>
+                    printers &&
+                    setCurrentPrinter(Object.values(printers).filter((item) => item.title === e)[0])
+                  }
                 />
               )}
             />
@@ -111,7 +115,7 @@ export const AddCartrigeForm = () => {
               )}
             />
           </Form.Item>
-          {(cartrige === 'Тонер' || (cartrige === 'Картридж' && printer.includes('7225'))) && (
+          {currentPrinter?.isColor && cartrige !== 'Контейнер отработаного тонера' && (
             <Form.Item
               label="Цвет"
               validateStatus={errors.type ? 'error' : ''}

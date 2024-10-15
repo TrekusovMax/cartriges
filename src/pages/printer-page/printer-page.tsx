@@ -30,7 +30,6 @@ export const PrinterPage = () => {
     }
   }, [printerData])
 
-  //console.log(items)
   const onEdit = () => {
     navigate(`${location.pathname}/edit`, { state: { location: location.pathname } })
   }

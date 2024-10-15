@@ -4,7 +4,7 @@ import { useFindPrinterQuery } from '@/entities/printer/api'
 import { IPrinter } from '@/entities/printer/api/printer.api.types'
 import { ipRegex } from '@/shared/functions/CheckIp'
 import { useAddPrinter } from '@/shared/hooks'
-import { Button, Card, Checkbox, Flex, Form, Image, Input, Select, Space, message } from 'antd'
+import { Button, Card, Flex, Form, Image, Input, Select, Space, Switch, message } from 'antd'
 import { useEffect, useState } from 'react'
 import { useForm, Controller, SubmitHandler } from 'react-hook-form'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
@@ -36,7 +36,6 @@ export const EditPrinterForm = () => {
   const onFinish: SubmitHandler<IPrinter> = (editData) => {
     if (id) {
       editData.isColor = checkedField
-
       dispatch(editPrinter({ printer: editData, id: id }))
         .then(() => {
           message.success('Данные изменены')
@@ -148,7 +147,7 @@ export const EditPrinterForm = () => {
                 />
               </Form.Item>
               <Form.Item
-                label="Цветное МФУ"
+                label="Цвет"
                 validateStatus={errors.serialNumber ? 'error' : ''}
                 help={errors.serialNumber ? errors.serialNumber.message : ''}
                 style={{ width: '100%' }}>
@@ -156,10 +155,12 @@ export const EditPrinterForm = () => {
                   name="isColor"
                   control={control}
                   render={() => (
-                    <Checkbox
-                      defaultChecked={checkedField}
+                    <Switch
+                      defaultChecked={data.isColor}
+                      checkedChildren="Цветной"
+                      unCheckedChildren="Чёрно-белый"
                       onChange={(e) => {
-                        setCheckedField(e.target.checked)
+                        setCheckedField(e)
                       }}
                     />
                   )}
@@ -181,7 +182,7 @@ export const EditPrinterForm = () => {
                   onConfirm={() => {
                     dispatch(deletePrinter(id))
                     message.error('МФУ удалено')
-                    navigate(location.state.location)
+                    navigate(import.meta.env.BASE_URL)
                   }}
                   okText="Да"
                   cancelText="Нет">

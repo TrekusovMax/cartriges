@@ -12,7 +12,7 @@ import {
   Select,
   Space,
   message,
-  Checkbox,
+  Switch,
 } from 'antd'
 
 import { useForm, Controller, SubmitHandler } from 'react-hook-form'
@@ -40,7 +40,7 @@ export const AddPrinterForm = () => {
   const imageSelected = useRef<boolean>(false)
 
   const { onChangeIp } = useAddPrinter()
-  const [checkedField, setCheckedField] = useState(false)
+  const [checkedColorField, setCheckedColorField] = useState(false)
   const [showUploadList, setShowUploadList] = useState(true)
   const [showProgress, setShowProgress] = useState(false)
   const [showImage, setShowImage] = useState(false)
@@ -70,7 +70,7 @@ export const AddPrinterForm = () => {
   }, [])
 
   const onFinish: SubmitHandler<IPrinter> = (data) => {
-    data.isColor = checkedField
+    data.isColor = checkedColorField
 
     if (imageSelected.current) {
       dispatch(
@@ -126,7 +126,7 @@ export const AddPrinterForm = () => {
     dispatch(fileRemove())
     setShowUploadList(false)
     setShowImage(false)
-    setCheckedField(false)
+    setCheckedColorField(false)
     imageSelected.current = false
     reset()
   }
@@ -270,7 +270,7 @@ export const AddPrinterForm = () => {
             />
           </Form.Item>
           <Form.Item
-            label="Цветное МФУ"
+            label="Цвет"
             validateStatus={errors.serialNumber ? 'error' : ''}
             help={errors.serialNumber ? errors.serialNumber.message : ''}
             style={{ width: '100%' }}>
@@ -278,10 +278,12 @@ export const AddPrinterForm = () => {
               name="isColor"
               control={control}
               render={() => (
-                <Checkbox
-                  defaultChecked={checkedField}
+                <Switch
+                  defaultChecked={false}
+                  checkedChildren="Цветной"
+                  unCheckedChildren="Чёрно-белый"
                   onChange={(e) => {
-                    setCheckedField(e.target.checked)
+                    setCheckedColorField(e)
                   }}
                 />
               )}
