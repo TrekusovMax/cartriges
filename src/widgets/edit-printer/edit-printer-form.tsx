@@ -59,7 +59,7 @@ export const EditPrinterForm = () => {
       <Col span={4}>
         <Card style={{ width: 350 }}>
           <Image preview={false} alt={data.title} src={data.image} />
-          <Card.Meta title={data.title} style={{ textAlign: 'center' }} />
+          <Card.Meta title={data.title} style={{ textAlign: 'center', marginTop: '15px' }} />
         </Card>
       </Col>
 
