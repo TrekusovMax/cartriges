@@ -34,6 +34,7 @@ export const AddCartrigeForm = () => {
     dispatch(addCartrige(data)).then(() => {
       message.success('Добавлен новый картридж')
     })
+    reset()
   }
   const onReset = () => {
     reset()
