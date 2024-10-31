@@ -2,7 +2,10 @@ import MainPage from '@/pages/main-page'
 import { Loader } from '@/shared/ui/loader'
 import { MainLayout } from '@/widgets/layout/main-layout'
 import { Suspense } from 'react'
+
 import { createBrowserRouter, redirect } from 'react-router-dom'
+import { IBreadcrumbProps } from './types'
+import { getOfficeCrumbs } from '@/features/GetOfficeName/getOfficeCrumbs'
 
 export const router = createBrowserRouter([
   {
@@ -33,6 +36,10 @@ export const router = createBrowserRouter([
           import('@/pages/main-page').then((res) => ({
             Component: res.default,
           })),
+        loader: (): IBreadcrumbProps => {
+          return { to: '/office', title: 'Офисы' }
+        },
+        handle: { crumb: (data: IBreadcrumbProps) => data },
       },
       {
         path: ':office',
@@ -40,6 +47,10 @@ export const router = createBrowserRouter([
           import('@/pages/office').then((res) => ({
             Component: res.default,
           })),
+        loader: ({ params, request }) => {
+          return getOfficeCrumbs(params, request)
+        },
+        handle: { crumb: (data: IBreadcrumbProps) => data },
       },
       {
         path: ':office/:printer',
@@ -47,6 +58,10 @@ export const router = createBrowserRouter([
           import('@/pages/printers-list-page').then((res) => ({
             Component: res.default,
           })),
+        loader: ({ params, request }) => {
+          return getOfficeCrumbs(params, request)
+        },
+        handle: { crumb: (data: IBreadcrumbProps) => data },
       },
     ],
   },
