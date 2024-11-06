@@ -58,7 +58,7 @@ export const AddPrinterSelect = ({ controllerName, control, printers, showImage 
         <Select
           {...field}
           onSelect={(val) => {
-            showImage!(val)
+            showImage!(val as string)
             setName('')
           }}
           placeholder="Выберите МФУ или добавте новую"

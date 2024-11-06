@@ -5,7 +5,7 @@ import { Suspense } from 'react'
 
 import { createBrowserRouter, redirect } from 'react-router-dom'
 import { IBreadcrumbProps } from './types'
-import { getOfficeCrumbs } from '@/features/GetOfficeName/getOfficeCrumbs'
+import { getOfficeCrumbs } from '@/shared/functions/getOfficeCrumbs'
 
 export const router = createBrowserRouter([
   {

@@ -7,33 +7,51 @@ import { useMatches } from 'react-router-dom'
 import { IBreadcrumbProps } from '@/app/providers/routes-provider/types'
 import { HomeFilled } from '@ant-design/icons'
 import { ItemType } from 'antd/es/breadcrumb/Breadcrumb'
+import { useMemo } from 'react'
 
 export const Breadcrumb = () => {
   const { data } = useGetOfficesQuery()
   const matches = useMatches()
 
-  const items: ItemType[] = [
+  let items: ItemType[] = [
     {
       href: '/',
       title: <HomeFilled />,
     },
   ]
 
-  const params = matches.filter((item) => Boolean(item.handle))[0]?.data as IBreadcrumbProps
-  if (params) {
-    console.log(params.params)
-    if ('params' in params) {
-      const paths = params.to.split('/').slice(1)
-      paths.pop()
+  const params = useMemo(
+    () => matches.filter((item) => Boolean(item.handle))[0]?.data as IBreadcrumbProps[],
+    [matches],
+  )
 
-      for (const href of paths) {
-        items.push({ href: `/${href}`, title: params.title })
-      }
-      const section = params && Object.values(params.params as Object)[0]
-      const officeName = data && data[section].name
-      items.push({ title: officeName })
+  if (!params) {
+    items.push({ href: '/', title: 'Офисы' })
+  }
+
+  if (params && data) {
+    if (!Array.isArray(params)) {
+      const param: IBreadcrumbProps = params
+      items.push({ href: param.to, title: param.title })
     } else {
-      items.push({ href: params.to, title: params.title })
+      for (const param of params) {
+        let index = param.params as string
+        if ('params' in param) {
+          const elem = params.filter((el) => data[el.params as string])
+          if (elem.length === 1 && elem[0].params) {
+            const href = elem[0].params as string
+            if (data[index]) {
+              items.push({ href: param.to, title: param.title })
+            } else {
+              data[href] && items.push({ href, title: data[href].name })
+            }
+          }
+
+          items = items.filter((el, i) => el.href !== undefined && i !== items.length)
+          const lastItem = data[index] ? data[index].name : (param.params as string)
+          items.push({ title: lastItem })
+        }
+      }
     }
   }
 
@@ -46,6 +64,7 @@ export const Breadcrumb = () => {
     paths: string[],
   ): React.ReactNode => {
     const isLast = routes.indexOf(route) === routes.length - 1
+
     return isLast ? <span>{route.title}</span> : <Link to={route.href!}>{route.title}</Link>
   }
 
