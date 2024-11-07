@@ -39,7 +39,7 @@ export const PrintersListPage = () => {
         {printerData ? (
           isPrintersArray(items) &&
           items.map((elem, index) => (
-            <Link to={`${import.meta.env.VITE_HOST}/printer/${items[index].id}`} key={index}>
+            <Link to={`${items[index].id}`} key={index}>
               <Card
                 hoverable
                 style={{ width: 300, marginTop: 20 }}

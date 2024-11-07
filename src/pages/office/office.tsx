@@ -26,14 +26,12 @@ export const Office = () => {
     }
   }, [printerData, office, printer])
 
-  // console.log(items)
-
   return (
     <>
       <Flex justify={'space-around'} align={'center'} wrap={'wrap'} style={{ padding: '0 50px' }}>
         {printerData &&
           items.map((elem, index) => (
-            <Link to={`${import.meta.env.VITE_HOST}/printer/${items[index].id}`} key={index}>
+            <Link to={`${elem.title}/${items[index].id}`} key={index}>
               <Card
                 hoverable
                 style={{ width: 300, marginTop: 20 }}

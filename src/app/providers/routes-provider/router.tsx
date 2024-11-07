@@ -6,6 +6,7 @@ import { Suspense } from 'react'
 import { createBrowserRouter, redirect } from 'react-router-dom'
 import { IBreadcrumbProps } from './types'
 import { getOfficeCrumbs } from '@/shared/functions/getOfficeCrumbs'
+import { getPrinterCrumbs } from '@/shared/functions/getPrinterCrumbs'
 
 export const router = createBrowserRouter([
   {
@@ -47,8 +48,8 @@ export const router = createBrowserRouter([
           import('@/pages/office').then((res) => ({
             Component: res.default,
           })),
-        loader: ({ params, request }) => {
-          return getOfficeCrumbs(params, request)
+        loader: ({ params }) => {
+          return getOfficeCrumbs(params)
         },
         handle: { crumb: (data: IBreadcrumbProps) => data },
       },
@@ -58,8 +59,30 @@ export const router = createBrowserRouter([
           import('@/pages/printers-list-page').then((res) => ({
             Component: res.default,
           })),
-        loader: ({ params, request }) => {
-          return getOfficeCrumbs(params, request)
+        loader: ({ params }) => {
+          return getOfficeCrumbs(params)
+        },
+        handle: { crumb: (data: IBreadcrumbProps) => data },
+      },
+      {
+        path: ':office/:printer/:id',
+        lazy: () =>
+          import('@/pages/printer-page').then((res) => ({
+            Component: res.default,
+          })),
+        loader: ({ params }) => {
+          return getPrinterCrumbs(params)
+        },
+        handle: { crumb: (data: IBreadcrumbProps) => data },
+      },
+      {
+        path: ':office/:printer/:id/edit',
+        lazy: () =>
+          import('@/pages/edit-page').then((res) => ({
+            Component: res.default,
+          })),
+        loader: ({ params }) => {
+          return getPrinterCrumbs(params)
         },
         handle: { crumb: (data: IBreadcrumbProps) => data },
       },
@@ -82,6 +105,10 @@ export const router = createBrowserRouter([
           import('@/pages/printer-page').then((res) => ({
             Component: res.default,
           })),
+        loader: ({ params }) => {
+          return getPrinterCrumbs(params)
+        },
+        handle: { crumb: (data: IBreadcrumbProps) => data },
       },
       {
         path: ':id/edit',
@@ -106,6 +133,10 @@ export const router = createBrowserRouter([
           import('@/pages/add-printer').then((res) => ({
             Component: res.default,
           })),
+        loader: (): IBreadcrumbProps => {
+          return { to: '/add-printer', title: 'Добавить МФУ' }
+        },
+        handle: { crumb: (data: IBreadcrumbProps) => data },
       },
     ],
   },
@@ -119,6 +150,10 @@ export const router = createBrowserRouter([
           import('@/pages/add-cartrige').then((res) => ({
             Component: res.default,
           })),
+        loader: (): IBreadcrumbProps => {
+          return { to: '/add-cartrige', title: 'Добавить картридж' }
+        },
+        handle: { crumb: (data: IBreadcrumbProps) => data },
       },
     ],
   },

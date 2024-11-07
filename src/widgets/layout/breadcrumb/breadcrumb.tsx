@@ -8,9 +8,11 @@ import { IBreadcrumbProps } from '@/app/providers/routes-provider/types'
 import { HomeFilled } from '@ant-design/icons'
 import { ItemType } from 'antd/es/breadcrumb/Breadcrumb'
 import { useMemo } from 'react'
+import { renderCrumbs } from './renderCrumbs'
 
 export const Breadcrumb = () => {
-  const { data } = useGetOfficesQuery()
+  const { data: offices } = useGetOfficesQuery()
+
   const matches = useMatches()
 
   let items: ItemType[] = [
@@ -25,35 +27,7 @@ export const Breadcrumb = () => {
     [matches],
   )
 
-  if (!params) {
-    items.push({ href: '/', title: 'Офисы' })
-  }
-
-  if (params && data) {
-    if (!Array.isArray(params)) {
-      const param: IBreadcrumbProps = params
-      items.push({ href: param.to, title: param.title })
-    } else {
-      for (const param of params) {
-        let index = param.params as string
-        if ('params' in param) {
-          const elem = params.filter((el) => data[el.params as string])
-          if (elem.length === 1 && elem[0].params) {
-            const href = elem[0].params as string
-            if (data[index]) {
-              items.push({ href: param.to, title: param.title })
-            } else {
-              data[href] && items.push({ href, title: data[href].name })
-            }
-          }
-
-          items = items.filter((el, i) => el.href !== undefined && i !== items.length)
-          const lastItem = data[index] ? data[index].name : (param.params as string)
-          items.push({ title: lastItem })
-        }
-      }
-    }
-  }
+  items.push(...renderCrumbs(params, offices))
 
   const itemRender = (
     route: ItemType,
