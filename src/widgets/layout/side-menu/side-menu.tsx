@@ -3,8 +3,9 @@ import { PrinterOutlined } from '@ant-design/icons'
 import { Menu } from 'antd'
 import type { MenuProps } from 'antd'
 import { useGetOfficesQuery } from '@/entities/app/api'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { useGetPrintersQuery } from '@/entities/printer/api'
+import { ROUTER_PATHS } from '@/shared/constants/routes'
 
 interface IMenuItems {
   [key: string]: string[]
@@ -50,7 +51,7 @@ export const SideMenu = () => {
                 key: subKey,
                 label: (
                   <Link
-                    to={`${import.meta.env.VITE_HOST}/office/${menuKeys[index]}/${
+                    to={`${import.meta.env.VITE_HOST + ROUTER_PATHS.OFFICES}/${menuKeys[index]}/${
                       sideMenuItems[item][j]
                     }`}>
                     {sideMenuItems[item][j]}
@@ -77,7 +78,9 @@ export const SideMenu = () => {
           return {
             key: `${item}`,
             label: (
-              <Link to={`${import.meta.env.VITE_HOST}/office/${menuKeys[index]}`}>{item}</Link>
+              <Link to={`${import.meta.env.VITE_HOST + ROUTER_PATHS.OFFICES}/${menuKeys[index]}`}>
+                {item}
+              </Link>
             ),
           }
         })

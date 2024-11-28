@@ -2,14 +2,14 @@ import { useAppDispatch } from '@/app/providers/store-provider/store.types'
 import { useGetOfficesQuery } from '@/entities/app/api'
 import { useFindPrinterQuery } from '@/entities/printer/api'
 import { IPrinter } from '@/entities/printer/api/printer.api.types'
-import { ipRegex } from '@/shared/functions/CheckIp'
-import { useAddPrinter } from '@/shared/hooks'
+import { ipRegex } from '@/shared/lib/functions/CheckIp'
+import { useOnChangeIp } from '@/shared/lib/hooks/UseOnChangeIp'
 import { Button, Card, Flex, Form, Image, Input, Select, Space, Switch, message } from 'antd'
 import { useEffect, useState } from 'react'
 import { useForm, Controller, SubmitHandler } from 'react-hook-form'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { Col, Row, Popconfirm } from 'antd'
-import { deletePrinter, editPrinter } from '@/entities/printer/model'
+import { deletePrinter, editPrinter } from '@/entities'
 import { Loader } from '@/shared/ui/loader'
 
 export const EditPrinterForm = () => {
@@ -17,7 +17,7 @@ export const EditPrinterForm = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const dispatch = useAppDispatch()
-  const { onChangeIp } = useAddPrinter()
+  const { onChangeIp } = useOnChangeIp()
 
   const [checkedField, setCheckedField] = useState(false)
   const [data, setData] = useState<IPrinter>()

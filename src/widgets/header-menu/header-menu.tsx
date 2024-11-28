@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom'
 import { Menu } from 'antd'
 
 import type { MenuProps, MenuRef } from 'antd'
+import { ROUTER_PATHS } from '@/shared/constants/routes'
 
 interface IHeaderMenu {
   title: string
@@ -16,10 +17,10 @@ export const HeaderMenu = () => {
   const [menuItems, setMenuItems] = useState<MenuProps['items']>([])
 
   const headerData: IHeaderMenu[] = [
-    { title: 'Добавить МФУ', path: '/add-printer' },
-    { title: 'Добавить картридж', path: '/add-cartrige' },
-    { title: 'Отчёт', path: '/report' },
-    { title: 'Настройки', path: '/settings' },
+    { title: 'Добавить МФУ', path: ROUTER_PATHS.ADD_PRINTER },
+    { title: 'Добавить картридж', path: ROUTER_PATHS.ADD_CARTRIGE },
+    { title: 'Отчёт', path: ROUTER_PATHS.REPORT },
+    { title: 'Настройки', path: ROUTER_PATHS.SETTINGS },
   ]
 
   const menuTitle = Object.values(headerData).map((item) => item.title)

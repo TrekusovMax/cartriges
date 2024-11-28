@@ -1,4 +1,5 @@
 import { useGetOfficesQuery } from '@/entities/app/api'
+import { ROUTER_PATHS } from '@/shared/constants/routes'
 import { OfficeCard } from '@/widgets/office-card'
 
 import { Flex } from 'antd'
@@ -23,7 +24,7 @@ export const MainPage = () => {
           <Flex style={{ width: '100%', height: 200 }} justify="space-evenly" align="flex-start">
             {data &&
               offices.map((office) => (
-                <Link to={`/office/${office}`} key={office}>
+                <Link to={`${ROUTER_PATHS.OFFICES}/${office}`} key={office}>
                   <OfficeCard
                     title={data[office].name}
                     imgSrc={data[office].image}

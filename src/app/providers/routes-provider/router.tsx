@@ -5,12 +5,13 @@ import { Suspense } from 'react'
 
 import { createBrowserRouter, redirect } from 'react-router-dom'
 import { IBreadcrumbProps } from './types'
-import { getOfficeCrumbs } from '@/shared/functions/getOfficeCrumbs'
-import { getPrinterCrumbs } from '@/shared/functions/getPrinterCrumbs'
+import { getOfficeCrumbs } from '@/shared/lib/functions/getOfficeCrumbs'
+import { getPrinterCrumbs } from '@/shared/lib/functions/getPrinterCrumbs'
+import { ROUTER_PATHS } from '@/shared/constants/routes'
 
 export const router = createBrowserRouter([
   {
-    path: '/',
+    path: ROUTER_PATHS.HOME,
     element: <MainLayout />,
     children: [
       {
@@ -28,7 +29,7 @@ export const router = createBrowserRouter([
     ],
   },
   {
-    path: '/office',
+    path: ROUTER_PATHS.OFFICES,
     element: <MainLayout />,
     children: [
       {
@@ -38,12 +39,12 @@ export const router = createBrowserRouter([
             Component: res.default,
           })),
         loader: (): IBreadcrumbProps => {
-          return { to: '/office', title: 'Офисы' }
+          return { to: ROUTER_PATHS.OFFICES, title: 'Офисы' }
         },
         handle: { crumb: (data: IBreadcrumbProps) => data },
       },
       {
-        path: ':office',
+        path: `${ROUTER_PATHS.OFFICE}`,
         lazy: () =>
           import('@/pages/office').then((res) => ({
             Component: res.default,
@@ -54,7 +55,7 @@ export const router = createBrowserRouter([
         handle: { crumb: (data: IBreadcrumbProps) => data },
       },
       {
-        path: ':office/:printer',
+        path: `${ROUTER_PATHS.OFFICE}/${ROUTER_PATHS.PRINTER}`,
         lazy: () =>
           import('@/pages/printers-list-page').then((res) => ({
             Component: res.default,
@@ -65,7 +66,7 @@ export const router = createBrowserRouter([
         handle: { crumb: (data: IBreadcrumbProps) => data },
       },
       {
-        path: ':office/:printer/:id',
+        path: `${ROUTER_PATHS.OFFICE}/${ROUTER_PATHS.PRINTER}/:id`,
         lazy: () =>
           import('@/pages/printer-page').then((res) => ({
             Component: res.default,
@@ -76,7 +77,7 @@ export const router = createBrowserRouter([
         handle: { crumb: (data: IBreadcrumbProps) => data },
       },
       {
-        path: ':office/:printer/:id/edit',
+        path: `${ROUTER_PATHS.OFFICE}/${ROUTER_PATHS.PRINTER}/:id/edit`,
         lazy: () =>
           import('@/pages/edit-page').then((res) => ({
             Component: res.default,
@@ -89,7 +90,7 @@ export const router = createBrowserRouter([
     ],
   },
   {
-    path: '/printer',
+    path: ROUTER_PATHS.PRINTERS,
     element: <MainLayout />,
     children: [
       {
@@ -124,7 +125,7 @@ export const router = createBrowserRouter([
     ],
   },
   {
-    path: '/add-printer',
+    path: ROUTER_PATHS.ADD_PRINTER,
     element: <MainLayout />,
     children: [
       {
@@ -134,14 +135,14 @@ export const router = createBrowserRouter([
             Component: res.default,
           })),
         loader: (): IBreadcrumbProps => {
-          return { to: '/add-printer', title: 'Добавить МФУ' }
+          return { to: ROUTER_PATHS.ADD_PRINTER, title: 'Добавить МФУ' }
         },
         handle: { crumb: (data: IBreadcrumbProps) => data },
       },
     ],
   },
   {
-    path: '/add-cartrige',
+    path: ROUTER_PATHS.ADD_CARTRIGE,
     element: <MainLayout />,
     children: [
       {
@@ -151,7 +152,7 @@ export const router = createBrowserRouter([
             Component: res.default,
           })),
         loader: (): IBreadcrumbProps => {
-          return { to: '/add-cartrige', title: 'Добавить картридж' }
+          return { to: ROUTER_PATHS.ADD_CARTRIGE, title: 'Добавить картридж' }
         },
         handle: { crumb: (data: IBreadcrumbProps) => data },
       },

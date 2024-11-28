@@ -10,9 +10,16 @@ type params = {
   control: Control<IPrinter, any>
   printers: DBOffices | undefined
   showImage?: (val: string) => void
+  imageSelected: React.MutableRefObject<boolean>
 }
 
-export const AddPrinterSelect = ({ controllerName, control, printers, showImage }: params) => {
+export const AddPrinterSelect = ({
+  controllerName,
+  control,
+  printers,
+  showImage,
+  imageSelected,
+}: params) => {
   const inputRef = useRef<InputRef>(null)
   const [items, setItems] = useState<string[]>([])
   const [name, setName] = useState('')
@@ -58,8 +65,9 @@ export const AddPrinterSelect = ({ controllerName, control, printers, showImage 
         <Select
           {...field}
           onSelect={(val) => {
+            imageSelected.current = true
             showImage!(val as string)
-            setName('')
+            setName(val as string)
           }}
           placeholder="Выберите МФУ или добавте новую"
           dropdownRender={(menu) => (

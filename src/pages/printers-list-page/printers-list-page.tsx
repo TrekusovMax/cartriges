@@ -1,6 +1,6 @@
 import { useGetPrintersQuery } from '@/entities/printer/api'
 import { DBOffices, IPrinter } from '@/entities/printer/api/printer.api.types'
-import { isPrinter, isPrintersArray } from '@/shared/functions'
+import { isPrinter, isPrintersArray } from '@/shared/lib/functions'
 import { Loader } from '@/shared/ui/loader'
 
 import { Card, Flex } from 'antd'

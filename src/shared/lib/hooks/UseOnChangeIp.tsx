@@ -1,4 +1,4 @@
-export const useAddPrinter = () => {
+export const useOnChangeIp = () => {
   const onChangeIp: React.ChangeEventHandler<HTMLInputElement> = (e) => {
     let value = e.target.value
 
@@ -22,7 +22,5 @@ export const useAddPrinter = () => {
     e.target.value = value
   }
 
-  return {
-    onChangeIp,
-  }
+  return { onChangeIp }
 }
