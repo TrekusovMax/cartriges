@@ -1,1 +1,1 @@
-export { AddPrinterImage } from './add-printer-image'
+export { AddPrinterImage } from '../../../shared/ui/add-printer-image'
