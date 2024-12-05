@@ -1,4 +1,4 @@
-import { IBreadcrumbProps } from '@/app/providers/routes-provider/types'
+import { IBreadcrumbProps } from '@/widgets/layout/breadcrumb/model/types'
 import { IOffices } from '@/entities/app/model/app.types'
 import { ItemType } from 'antd/es/breadcrumb/Breadcrumb'
 

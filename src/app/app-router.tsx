@@ -1,15 +1,15 @@
-import MainPage from '@/pages/main-page'
-import { Loader } from '@/shared/ui/loader'
-import { MainLayout } from '@/widgets/layout/main-layout'
 import { Suspense } from 'react'
+import { createBrowserRouter, redirect, RouterProvider } from 'react-router-dom'
 
-import { createBrowserRouter, redirect } from 'react-router-dom'
-import { IBreadcrumbProps } from './types'
+import { IBreadcrumbProps } from '@/widgets/layout/breadcrumb/model/types'
+import MainPage from '@/pages/main-page'
+import { MainLayout } from '@/widgets/layout/main-layout'
 import { getOfficeCrumbs } from '@/shared/lib/functions/getOfficeCrumbs'
 import { getPrinterCrumbs } from '@/shared/lib/functions/getPrinterCrumbs'
 import { ROUTER_PATHS } from '@/shared/constants/routes'
+import { Loader } from '@/shared/ui/loader'
 
-export const router = createBrowserRouter([
+const router = createBrowserRouter([
   {
     path: ROUTER_PATHS.HOME,
     element: <MainLayout />,
@@ -159,3 +159,7 @@ export const router = createBrowserRouter([
     ],
   },
 ])
+
+export const AppRouter = () => {
+  return <RouterProvider router={router} />
+}

@@ -1,17 +1,18 @@
 import React from 'react'
 
-import { Providers } from './providers'
+import { AppRouter } from './app-router'
+import { AppProvider } from './providers/app-provider'
+import { AppLoader } from './app-loader'
 
 import '@/shared/config/firebase/firebase-config.js'
-import { RouterProvider } from 'react-router-dom'
-import { router } from './providers/routes-provider/router'
-import { Loader } from '@/shared/ui/loader'
 
 const App: React.FC = () => {
   return (
-    <Providers>
-      <RouterProvider fallbackElement={<Loader />} router={router} />
-    </Providers>
+    <AppProvider>
+      <AppLoader>
+        <AppRouter />
+      </AppLoader>
+    </AppProvider>
   )
 }
 

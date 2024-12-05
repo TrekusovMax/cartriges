@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react'
-import { PrinterOutlined } from '@ant-design/icons'
 import { Menu } from 'antd'
 import type { MenuProps } from 'antd'
-import { useGetOfficesQuery } from '@/entities/app/api'
+import { PrinterOutlined } from '@ant-design/icons'
 import { Link, useParams } from 'react-router-dom'
-import { useGetPrintersQuery } from '@/entities/printer/api'
+import { useQuery } from '@tanstack/react-query'
+
+import { officesListQuery } from '@/entities/office/queries'
+import { printersListQuery } from '@/entities/printer/queries'
 import { ROUTER_PATHS } from '@/shared/constants/routes'
 
 interface IMenuItems {
@@ -12,32 +14,41 @@ interface IMenuItems {
 }
 
 export const SideMenu = () => {
+  const officeData = useQuery({
+    ...officesListQuery(),
+    initialData: {},
+  })
+  const printerData = useQuery({
+    ...printersListQuery(),
+    initialData: {},
+  })
+  const { office } = useParams()
+
+  const [isLoading, setIsloading] = useState(true)
   const [menuItems, setMenuItems] = useState<MenuProps['items']>([])
   const [openMenuIndex, setOpenMenuIndex] = useState<string[]>([])
-  const { data: officeData } = useGetOfficesQuery()
-  const { data: printerData } = useGetPrintersQuery()
-  const { office } = useParams()
-  const sideMenuItems: IMenuItems = {}
 
+  const sideMenuItems: IMenuItems = {}
   let openMenuKey = ''
 
   useEffect(() => {
-    if (officeData) {
-      const menuKeys = Object.keys(officeData)
-      const menuValues = Object.values(officeData).map((i) => i.name)
-      if (printerData) {
-        const printerDataValues = Object.values(printerData)
+    setIsloading(officeData.isLoading && printerData.isLoading)
+
+    if (officeData.data) {
+      const menuKeys = Object.keys(officeData.data)
+      const menuValues = Object.values(officeData.data).map((i) => i.name)
+      if (printerData.data) {
+        const printerDataValues = Object.values(printerData.data)
         menuKeys.map((item) => {
-          sideMenuItems[officeData[item].name] = []
+          sideMenuItems[officeData.data[item].name] = []
           const subMenu = new Set<string>()
           printerDataValues.map((printer) => {
             if (printer.office === item) {
               subMenu.add(printer.title)
             }
-            sideMenuItems[officeData[item].name] = Array.from(subMenu)
+            sideMenuItems[officeData.data[item].name] = Array.from(subMenu)
           })
         })
-
         const printersCount = Object.keys(printerData).length
         const items: MenuProps['items'] = menuValues.map((item, index) => {
           const printersInOfficeCount = Object.keys(sideMenuItems[item]).length
@@ -68,8 +79,8 @@ export const SideMenu = () => {
           }
         })
         setMenuItems(items)
-        if (office && officeData[office]?.name) {
-          setOpenMenuIndex([officeData[office].name])
+        if (office && officeData.data[office]?.name) {
+          setOpenMenuIndex([officeData.data[office].name])
         } else {
           setOpenMenuIndex([])
         }
@@ -87,13 +98,13 @@ export const SideMenu = () => {
         setMenuItems(items)
       }
     }
-  }, [officeData, office, printerData])
+  }, [officeData.data, office, printerData.data])
 
-  openMenuKey = (office && officeData && officeData[office]?.name) || ''
+  openMenuKey = (office && officeData.data && officeData.data[office]?.name) || ''
 
   return (
     <>
-      {officeData && officeData[office!] ? (
+      {isLoading ? (
         <Menu
           mode="inline"
           openKeys={openMenuIndex.length ? openMenuIndex : [openMenuKey]}

@@ -1,17 +1,21 @@
 import { Breadcrumb as AntdBreadcrumb } from 'antd'
 import { Link } from 'react-router-dom'
 
-import { useGetOfficesQuery } from '@/entities/app/api'
 import { useMatches } from 'react-router-dom'
 
-import { IBreadcrumbProps } from '@/app/providers/routes-provider/types'
+import { IBreadcrumbProps } from '@/widgets/layout/breadcrumb/model/types'
 import { HomeFilled } from '@ant-design/icons'
 import { ItemType } from 'antd/es/breadcrumb/Breadcrumb'
 import { useMemo } from 'react'
 import { renderCrumbs } from './renderCrumbs'
+import { useQuery } from '@tanstack/react-query'
+import { officesListQuery } from '@/entities/office/queries'
 
 export const Breadcrumb = () => {
-  const { data: offices } = useGetOfficesQuery()
+  const { data: offices, isLoading } = useQuery({
+    ...officesListQuery(),
+    initialData: {},
+  })
 
   const matches = useMatches()
 
@@ -42,5 +46,9 @@ export const Breadcrumb = () => {
     return isLast ? <span>{route.title}</span> : <Link to={route.href!}>{route.title}</Link>
   }
 
-  return <AntdBreadcrumb style={{ padding: '16px' }} itemRender={itemRender} items={items} />
+  return !isLoading ? (
+    <AntdBreadcrumb style={{ padding: '16px' }} itemRender={itemRender} items={items} />
+  ) : (
+    <></>
+  )
 }

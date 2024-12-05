@@ -1,5 +1,5 @@
-import { IBreadcrumbProps } from '@/app/providers/routes-provider/types'
-import { breadcrumbsTitle } from '@/widgets/layout/breadcrumb/breadcrumbsTitle'
+import { IBreadcrumbProps } from '@/widgets/layout/breadcrumb/model/types'
+import { breadcrumbsTitle } from '@/widgets/layout/breadcrumb/model/breadcrumbsTitle'
 import { Params } from 'react-router-dom'
 
 export const getPrinterCrumbs = (params: Params): IBreadcrumbProps[] => {
