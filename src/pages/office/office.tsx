@@ -2,7 +2,7 @@ import { Link, useParams } from 'react-router-dom'
 
 import { Card, Flex } from 'antd'
 import { useEffect, useState } from 'react'
-import { DBOffices, IPrinter } from '@/entities/printer/api/printer.api.types'
+import { Printers, IPrinter } from '@/entities/printer/api/types'
 import { useQuery } from '@tanstack/react-query'
 import { printersListQuery } from '@/entities/printer/queries'
 import { Loader } from '@/shared/ui/loader'
@@ -19,7 +19,7 @@ export const Office = () => {
   const [items, setItems] = useState<IPrinter[]>([])
   useEffect(() => {
     if (printerData) {
-      const pData: DBOffices = JSON.parse(JSON.stringify(printerData))
+      const pData: Printers = JSON.parse(JSON.stringify(printerData))
       Object.keys(printerData).map((key) => {
         pData[key].id = key
       })

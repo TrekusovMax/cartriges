@@ -7,7 +7,7 @@ import { useGetPrintersQuery } from '@/entities/printer/api'
 import { useAppDispatch } from '@/app/providers/store-provider/store.types'
 import { Color, ICartrige, type cartrigeType } from '@/entities/cartrige/api/cartrige.api.types'
 import { addCartrige } from '@/entities/cartrige/model'
-import { IPrinter } from '@/entities/printer/api/printer.api.types'
+import { IPrinter } from '@/entities/printer/api/types'
 
 export const AddCartrigeForm = () => {
   const dispatch = useAppDispatch()

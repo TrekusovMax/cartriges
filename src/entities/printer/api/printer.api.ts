@@ -1,6 +1,6 @@
 import { createApi } from '@reduxjs/toolkit/query/react'
 import { baseQueryWithResult } from '@/shared/config/redux/fetch-base-query'
-import { DBOffices, IPrinter } from './printer.api.types'
+import { DBOffices, IPrinter } from './types'
 
 export const printerApi = createApi({
   reducerPath: 'printerApi',

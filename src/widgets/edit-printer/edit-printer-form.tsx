@@ -1,42 +1,48 @@
 import { useAppDispatch } from '@/app/providers/store-provider/store.types'
 import { useGetOfficesQuery } from '@/entities/app/api'
 import { useFindPrinterQuery } from '@/entities/printer/api'
-import { IPrinter } from '@/entities/printer/api/printer.api.types'
+import { IPrinter } from '@/entities/printer/api/types'
 import { ipRegex } from '@/shared/lib/functions/CheckIp'
 import { useOnChangeIp } from '@/shared/lib/hooks/useOnChangeIp'
 import { Button, Card, Flex, Form, Image, Input, Select, Space, Switch, message } from 'antd'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useForm, Controller, SubmitHandler } from 'react-hook-form'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { Col, Row, Popconfirm } from 'antd'
 import { deletePrinter, editPrinter } from '@/entities'
 import { Loader } from '@/shared/ui/loader'
+import { printerByIdQuery } from '@/entities/printer/queries'
+import { useQuery } from '@tanstack/react-query'
+import { officesListQuery } from '@/entities/office/queries'
+import { isPrinter } from '@/shared/lib/functions'
 
 export const EditPrinterForm = () => {
   const { id } = useParams()
   const navigate = useNavigate()
   const location = useLocation()
-  const dispatch = useAppDispatch()
+
   const { onChangeIp } = useOnChangeIp()
 
   const [checkedField, setCheckedField] = useState(false)
-  const [data, setData] = useState<IPrinter>()
-  const { data: offices } = useGetOfficesQuery()
-  const { data: printerData, refetch } = useFindPrinterQuery(id!)
+
+  const { data: offices, isLoading: isLoadingOffices } = useQuery({
+    ...officesListQuery(),
+    initialData: {},
+  })
+
+  const { data: printerData, isLoading: isLoadingPrinters } = useQuery({
+    ...printerByIdQuery(id!),
+    initialData: {},
+  })
+
+  const isLoading = isLoadingOffices && isLoadingPrinters
 
   const office = offices && Object.keys(offices)
-
-  useEffect(() => {
-    if (printerData) {
-      setData(printerData)
-      setCheckedField(printerData.isColor)
-    }
-  }, [printerData])
 
   const onFinish: SubmitHandler<IPrinter> = (editData) => {
     if (id) {
       editData.isColor = checkedField
-      dispatch(editPrinter({ printer: editData, id: id }))
+      /* dispatch(editPrinter({ printer: editData, id: id }))
         .then(() => {
           message.success('Данные изменены')
           refetch()
@@ -44,7 +50,7 @@ export const EditPrinterForm = () => {
         })
         .catch(() => {
           message.error('Ошибка при изменении данных')
-        })
+        }) */
     }
   }
 
@@ -54,12 +60,12 @@ export const EditPrinterForm = () => {
     formState: { errors },
   } = useForm<IPrinter>()
 
-  return data && id ? (
+  return !isLoading && printerData && isPrinter(printerData) ? (
     <Row justify="space-evenly">
       <Col span={4}>
         <Card style={{ width: 350 }}>
-          <Image preview={false} alt={data.title} src={data.image} />
-          <Card.Meta title={data.title} style={{ textAlign: 'center', marginTop: '15px' }} />
+          <Image preview={false} alt={printerData.title} src={printerData.image} />
+          <Card.Meta title={printerData.title} style={{ textAlign: 'center', marginTop: '15px' }} />
         </Card>
       </Col>
 
@@ -75,7 +81,7 @@ export const EditPrinterForm = () => {
                 <Controller
                   name="serialNumber"
                   control={control}
-                  defaultValue={data.serialNumber}
+                  defaultValue={printerData.serialNumber}
                   rules={{ required: 'Номер не должен быть пустым' }}
                   render={({ field }) => <Input {...field} />}
                 />
@@ -88,7 +94,7 @@ export const EditPrinterForm = () => {
                 <Controller
                   name="xeroxNumber"
                   control={control}
-                  defaultValue={data.xeroxNumber}
+                  defaultValue={printerData.xeroxNumber}
                   rules={{ required: 'Номер не должен быть пустым' }}
                   render={({ field }) => <Input {...field} />}
                 />
@@ -101,7 +107,7 @@ export const EditPrinterForm = () => {
                 <Controller
                   name="ip"
                   control={control}
-                  defaultValue={data.ip}
+                  defaultValue={printerData.ip}
                   render={({ field }) => <Input {...field} onInput={onChangeIp} />}
                   rules={{
                     pattern: {
@@ -119,7 +125,7 @@ export const EditPrinterForm = () => {
                 <Controller
                   name="office"
                   control={control}
-                  defaultValue={data.office}
+                  defaultValue={printerData.office}
                   rules={{ required: 'Офис не должен быть пустым' }}
                   render={({ field }) => (
                     <Select {...field}>
@@ -141,7 +147,7 @@ export const EditPrinterForm = () => {
                 <Controller
                   name="description"
                   control={control}
-                  defaultValue={data.description}
+                  defaultValue={printerData.description}
                   rules={{ required: 'Поле не может быть пустым' }}
                   render={({ field }) => <Input {...field} />}
                 />
@@ -156,7 +162,7 @@ export const EditPrinterForm = () => {
                   control={control}
                   render={() => (
                     <Switch
-                      defaultChecked={data.isColor}
+                      defaultChecked={printerData.isColor}
                       checkedChildren="Цветной"
                       unCheckedChildren="Чёрно-белый"
                       onChange={(e) => {
@@ -180,7 +186,7 @@ export const EditPrinterForm = () => {
                   title="Подтвердите удаление"
                   description="Вы действительно хотите удалить МФУ?"
                   onConfirm={() => {
-                    dispatch(deletePrinter(id))
+                    //dispatch(deletePrinter(id))
                     message.error('МФУ удалено')
                     navigate(import.meta.env.BASE_URL)
                   }}

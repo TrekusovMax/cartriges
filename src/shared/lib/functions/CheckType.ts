@@ -1,6 +1,19 @@
-import { IPrinter } from '@/entities/printer/api/printer.api.types'
+import { IPrinter } from '@/entities/printer/api/types'
 
-export function isPrinter(item: IPrinter[] | IPrinter): item is IPrinter {
+type PrintersDto = {
+  [key: string]: {
+    description: string
+    image: string
+    ip: string
+    office: string
+    serialNumber: string
+    title: string
+    xeroxNumber: string
+    isColor: boolean
+  }
+}
+
+export function isPrinter(item: IPrinter[] | IPrinter | PrintersDto): item is IPrinter {
   return 'title' in item
 }
 export function isPrintersArray(item: IPrinter[] | IPrinter): item is IPrinter[] {

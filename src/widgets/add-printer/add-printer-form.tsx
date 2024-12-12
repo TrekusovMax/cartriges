@@ -23,7 +23,7 @@ import {
   UseFormProps,
   UseFormReturn,
 } from 'react-hook-form'
-import { IPrinter } from '@/entities/printer/api/printer.api.types'
+import { IPrinter } from '@/entities/printer/api/types'
 import { useOnChangeIp } from '@/shared/lib/hooks/useOnChangeIp'
 import { useGetOfficesQuery } from '@/entities/app/api'
 import { useGetPrintersQuery } from '@/entities/printer/api'

@@ -1,5 +1,5 @@
 import { AppThunk } from '@/app/providers/store-provider/store.types'
-import { IPrinter } from '../api/printer.api.types'
+import { IPrinter } from '../api/types'
 import { printerApi } from '../api'
 
 interface IEditPrinter {

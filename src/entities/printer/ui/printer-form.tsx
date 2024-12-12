@@ -1,7 +1,7 @@
 import { Button, Flex, Form, Input, Progress, Space, Switch } from 'antd'
 
 import { Controller } from 'react-hook-form'
-import { IPrinter } from '../api/printer.api.types'
+import { IPrinter } from '../api/types'
 
 import { PrinterCardImg } from '@/shared/ui/printer-card-img'
 import { useOnChangeIp } from '@/shared/lib/hooks/useOnChangeIp'

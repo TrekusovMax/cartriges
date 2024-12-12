@@ -29,3 +29,17 @@ export interface PrinterFormProps<T extends FieldValues, TName extends FieldPath
   setCheckedColorField: (value: React.SetStateAction<boolean>) => void
   renderDataSelect: ({ field }: { field: ControllerRenderProps<T, TName> }) => React.ReactElement
 }
+
+export interface Printers {
+  [key: string]: IPrinter
+}
+export interface IPrinter {
+  description: string | undefined
+  image: string
+  ip: string | undefined
+  office: string
+  serialNumber: number
+  title: string
+  xeroxNumber: string
+  isColor: boolean
+}

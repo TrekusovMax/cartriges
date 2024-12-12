@@ -1,4 +1,4 @@
-export interface DBOffices {
+export interface Printers {
   [key: string]: IPrinter
 }
 export interface IPrinter {

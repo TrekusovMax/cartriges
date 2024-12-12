@@ -1,4 +1,4 @@
-import { DBOffices, IPrinter } from '@/entities/printer/api/printer.api.types'
+import { DBOffices, IPrinter } from '@/entities/printer/api/types'
 import { PlusOutlined } from '@ant-design/icons'
 import { Button, Divider, Input, InputRef, Select, Space } from 'antd'
 import React, { useEffect, useRef, useState } from 'react'

@@ -12,7 +12,7 @@ export const printersListQuery = () => ({
 
 export const printerByIdQuery = (id: string) => ({
   queryKey: [printerQueryKey, 'byId', id],
-  /*  queryFn: () => printersApi.getPrinters(id).then((r) => r ?? null), */
+  queryFn: () => printersApi.getPrintersById(id).then((r) => r ?? null),
 })
 
 export const useInvaliatePrintersList = () => {

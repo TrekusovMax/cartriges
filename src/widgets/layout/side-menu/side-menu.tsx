@@ -104,7 +104,7 @@ export const SideMenu = () => {
 
   return (
     <>
-      {isLoading ? (
+      {!isLoading ? (
         <Menu
           mode="inline"
           openKeys={openMenuIndex.length ? openMenuIndex : [openMenuKey]}
