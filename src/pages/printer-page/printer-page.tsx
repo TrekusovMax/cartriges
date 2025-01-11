@@ -4,36 +4,50 @@ import { DeleteOutlined, EditOutlined } from '@ant-design/icons'
 import { Card, Flex, message, Popconfirm } from 'antd'
 import Meta from 'antd/es/card/Meta'
 
-import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
-import { printerByIdQuery } from '@/entities/printer/queries'
-import { useQuery } from '@tanstack/react-query'
+import {
+  Link,
+  useLocation,
+  useNavigate,
+  useParams,
+} from 'react-router-dom'
+
+import { usePrinter } from '@/features/printer'
 
 export const PrinterPage = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const { id } = useParams()
 
-  const { data: items, isLoading } = useQuery({
-    ...printerByIdQuery(id!),
-    initialData: {},
-  })
+  const { data: items } = usePrinter(id ?? '')
 
   const onEdit = () => {
-    navigate(`${location.pathname}/edit`, { state: { location: location.pathname } })
+    navigate(`${location.pathname}/edit`, {
+      state: { location: location.pathname },
+    })
   }
 
   return (
     <>
-      {!isLoading && (
-        <Flex justify={'space-around'} align={'center'} wrap={'wrap'} style={{ padding: '0 50px' }}>
+      {
+        <Flex
+          justify={'space-around'}
+          align={'center'}
+          wrap={'wrap'}
+          style={{ padding: '0 50px' }}>
           {items && id ? (
             isPrinter(items) && (
               <Card
                 hoverable
                 style={{ width: 300, marginTop: 20 }}
-                cover={<img alt="example" src={items.image} height={400} />}
+                cover={
+                  <img alt="example" src={items.image} height={400} />
+                }
                 actions={[
-                  <EditOutlined style={{ color: 'green' }} key="edit" onClick={onEdit} />,
+                  <EditOutlined
+                    style={{ color: 'green' }}
+                    key="edit"
+                    onClick={onEdit}
+                  />,
                   <Popconfirm
                     title="Подтвердите удаление"
                     description="Вы действительно хотите удалить МФУ?"
@@ -44,17 +58,24 @@ export const PrinterPage = () => {
                     }}
                     okText="Да"
                     cancelText="Нет">
-                    <DeleteOutlined style={{ color: 'red' }} key="delete" />,
+                    <DeleteOutlined
+                      style={{ color: 'red' }}
+                      key="delete"
+                    />
+                    ,
                   </Popconfirm>,
                 ]}>
-                <Meta title={items.title} description={items.description} />
+                <Meta
+                  title={items.title}
+                  description={items.description}
+                />
                 <Meta description={items.ip} />
               </Card>
             )
           ) : (
             <>
               <h3>
-                МФУ не найдено.{' '}
+                МФУ не найдено.
                 <strong>
                   <Link to={''} onClick={() => navigate(-1)}>
                     Назад
@@ -64,7 +85,7 @@ export const PrinterPage = () => {
             </>
           )}
         </Flex>
-      )}
+      }
     </>
   )
 }

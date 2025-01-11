@@ -1,5 +1,8 @@
-import { Suspense } from 'react'
-import { createBrowserRouter, redirect, RouterProvider } from 'react-router-dom'
+import {
+  createBrowserRouter,
+  redirect,
+  RouterProvider,
+} from 'react-router-dom'
 
 import { IBreadcrumbProps } from '@/widgets/layout/breadcrumb/model/types'
 import MainPage from '@/pages/main-page'
@@ -7,7 +10,6 @@ import { MainLayout } from '@/widgets/layout/main-layout'
 import { getOfficeCrumbs } from '@/shared/lib/functions/getOfficeCrumbs'
 import { getPrinterCrumbs } from '@/shared/lib/functions/getPrinterCrumbs'
 import { ROUTER_PATHS } from '@/shared/constants/routes'
-import { Loader } from '@/shared/ui/loader'
 
 const router = createBrowserRouter([
   {
@@ -16,11 +18,7 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: (
-          <Suspense fallback={<Loader />}>
-            <MainPage />
-          </Suspense>
-        ),
+        element: <MainPage />,
       },
       {
         path: '*',
@@ -152,7 +150,10 @@ const router = createBrowserRouter([
             Component: res.default,
           })),
         loader: (): IBreadcrumbProps => {
-          return { to: ROUTER_PATHS.ADD_CARTRIGE, title: 'Добавить картридж' }
+          return {
+            to: ROUTER_PATHS.ADD_CARTRIGE,
+            title: 'Добавить картридж',
+          }
         },
         handle: { crumb: (data: IBreadcrumbProps) => data },
       },

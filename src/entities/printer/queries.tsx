@@ -1,7 +1,7 @@
 import { printersApi } from '@/shared/api/modules/printer'
 import { useQueryClient } from '@tanstack/react-query'
 
-const printerQueryKey = 'printer'
+export const printerQueryKey = 'printer'
 
 export const printersListQuery = () => ({
   queryKey: [printerQueryKey, 'list'],
@@ -12,7 +12,7 @@ export const printersListQuery = () => ({
 
 export const printerByIdQuery = (id: string) => ({
   queryKey: [printerQueryKey, 'byId', id],
-  queryFn: () => printersApi.getPrintersById(id).then((r) => r ?? null),
+  queryFn: () => printersApi.getPrinterById(id).then((r) => r ?? null),
 })
 
 export const useInvaliatePrintersList = () => {

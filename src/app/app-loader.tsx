@@ -1,17 +1,13 @@
 import { officesListQuery } from '@/entities/office/queries'
 import { printersListQuery } from '@/entities/printer/queries'
-import { Loader } from '@/shared/ui/loader'
+
 import { useQueryClient } from '@tanstack/react-query'
-import { ReactNode, useEffect, useState } from 'react'
+import { ReactNode, useEffect } from 'react'
 
 export function AppLoader({ children }: { children?: ReactNode }) {
   const queryClient = useQueryClient()
 
-  const [isLoading, setIsLoading] = useState(true)
-
-  useEffect(() => {
-    setIsLoading(true)
-
+  /* useEffect(() => {
     Promise.all([
       queryClient.prefetchQuery({
         ...printersListQuery(),
@@ -27,15 +23,9 @@ export function AppLoader({ children }: { children?: ReactNode }) {
       }),
       queryClient.prefetchQuery({
         ...tasksListQuery(),
-      }), */
-    ]).finally(() => {
-      setIsLoading(false)
-    })
-  }, [queryClient])
-
-  if (isLoading) {
-    return <Loader />
-  }
+      }), 
+    ])
+  }, [queryClient]) */
 
   return <>{children}</>
 }

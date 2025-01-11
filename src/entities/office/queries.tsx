@@ -1,7 +1,7 @@
 import { officesApi } from '@/shared/api/modules/office'
 import { useQueryClient } from '@tanstack/react-query'
 
-const officeQueryKey = 'office'
+export const officeQueryKey = 'office'
 
 export const officesListQuery = () => ({
   queryKey: [officeQueryKey, 'list'],
@@ -12,7 +12,7 @@ export const officesListQuery = () => ({
 
 export const officeByIdQuery = (id: string) => ({
   queryKey: [officeQueryKey, 'byId', id],
-  /*  queryFn: () => officesApi.getoffices(id).then((r) => r ?? null), */
+  queryFn: () => officesApi.getofficeById(id).then((r) => r ?? null),
 })
 
 export const useInvaliateOfficesList = () => {

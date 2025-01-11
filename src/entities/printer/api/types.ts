@@ -8,7 +8,7 @@ export interface IPrinter {
   isColor: boolean
   serialNumber: string
   xeroxNumber: string
-  ip: string | undefined
+  ip: string | ''
   office: string
-  description: string | undefined
+  description: string | ''
 }

@@ -1,5 +1,5 @@
 import httpService from '../http-client'
-const printerEndpoint = '/offices.json'
+const officeEndpoint = '/offices'
 
 type OfficesDto = {
   [key: string]: {
@@ -11,9 +11,11 @@ type OfficesDto = {
 
 export const officesApi = {
   getOffices: async (): Promise<OfficesDto> => {
-    const { data } = await httpService.get(printerEndpoint)
+    const { data } = await httpService.get(officeEndpoint + '.json')
     return data
   },
-  addPrinters: () => {},
-  deletePrinters: () => {},
+  getofficeById: async (id: string): Promise<OfficesDto> => {
+    const { data } = await httpService.get(officeEndpoint + `/${id}.json`)
+    return data
+  },
 }

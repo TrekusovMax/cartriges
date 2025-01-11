@@ -1,28 +1,45 @@
 import httpService from '../http-client'
-const printerEndpoint = '/printers.json'
+const printerEndpoint = '/printers'
 
-type PrintersDto = {
-  [key: string]: {
-    description: string
-    image: string
-    ip: string
-    office: string
-    serialNumber: string
-    title: string
-    xeroxNumber: string
-    isColor: boolean
-  }
+export type PrintersDto = {
+  [key: string]: PrinterData
 }
+type PrinterData = {
+  description: string
+  image: string
+  ip: string
+  isColor: boolean
+  office: string
+  serialNumber: string
+  title: string
+  xeroxNumber: string
+}
+
+type UpdatePrinterData = PrinterData & { id?: string }
 
 export const printersApi = {
   getPrinters: async (): Promise<PrintersDto> => {
-    const { data } = await httpService.get(printerEndpoint)
+    const { data } = await httpService.get<PrintersDto>(
+      printerEndpoint + '.json',
+    )
     return data
   },
-  getPrintersById: async (id: string): Promise<PrintersDto | undefined> => {
-    const { data } = await httpService.get(printerEndpoint)
+  getPrinterById: async (id: string): Promise<PrinterData | null> => {
+    const { data } = await httpService.get(printerEndpoint + `/${id}.json`)
+    return data
+  },
 
-    return data[id]
+  updatePrinter: async (
+    payload: UpdatePrinterData,
+  ): Promise<PrinterData> => {
+    const { id } = payload
+    delete payload.id
+
+    const { data } = await httpService.patch(
+      printerEndpoint + `/${id}.json`,
+      payload,
+    )
+    return data
   },
   addPrinters: () => {},
   deletePrinters: () => {},

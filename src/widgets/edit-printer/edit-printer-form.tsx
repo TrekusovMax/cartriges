@@ -1,6 +1,6 @@
 import { useAppDispatch } from '@/app/providers/store-provider/store.types'
 import { useGetOfficesQuery } from '@/entities/app/api'
-import { useFindPrinterQuery } from '@/entities/printer/api'
+import { printerApi, useFindPrinterQuery } from '@/entities/printer/api'
 import { IPrinter } from '@/entities/printer/api/types'
 import { ipRegex } from '@/shared/lib/functions/CheckIp'
 import { useOnChangeIp } from '@/shared/lib/hooks/useOnChangeIp'
@@ -15,6 +15,7 @@ import { printerByIdQuery } from '@/entities/printer/queries'
 import { useQuery } from '@tanstack/react-query'
 import { officesListQuery } from '@/entities/office/queries'
 import { isPrinter } from '@/shared/lib/functions'
+import { printersApi } from '@/shared/api/modules/printer'
 
 export const EditPrinterForm = () => {
   const { id } = useParams()
@@ -25,23 +26,33 @@ export const EditPrinterForm = () => {
 
   const [checkedField, setCheckedField] = useState(false)
 
-  const { data: offices, isLoading: isLoadingOffices } = useQuery({
+  const offices = useQuery({
     ...officesListQuery(),
     initialData: {},
   })
 
-  const { data: printerData, isLoading: isLoadingPrinters } = useQuery({
+  const printerData = useQuery({
     ...printerByIdQuery(id!),
     initialData: {},
   })
 
-  const isLoading = isLoadingOffices && isLoadingPrinters
+  const isLoading = offices.isLoading && printerData.isLoading
 
-  const office = offices && Object.keys(offices)
+  const office = offices && Object.keys(offices.data)
 
   const onFinish: SubmitHandler<IPrinter> = (editData) => {
     if (id) {
       editData.isColor = checkedField
+      editData.id = id
+      printersApi
+        .updatePrinter(editData)
+        .then(() => {
+          message.success('Данные изменены')
+          //navigate(location.state.location)
+        })
+        .catch(() => {
+          message.error('Ошибка при изменении данных')
+        })
       /* dispatch(editPrinter({ printer: editData, id: id }))
         .then(() => {
           message.success('Данные изменены')
@@ -60,12 +71,15 @@ export const EditPrinterForm = () => {
     formState: { errors },
   } = useForm<IPrinter>()
 
-  return !isLoading && printerData && isPrinter(printerData) ? (
+  return !isLoading && printerData.data && isPrinter(printerData.data) ? (
     <Row justify="space-evenly">
       <Col span={4}>
         <Card style={{ width: 350 }}>
-          <Image preview={false} alt={printerData.title} src={printerData.image} />
-          <Card.Meta title={printerData.title} style={{ textAlign: 'center', marginTop: '15px' }} />
+          <Image preview={false} alt={printerData.data.title} src={printerData.data.image} />
+          <Card.Meta
+            title={printerData.data.title}
+            style={{ textAlign: 'center', marginTop: '15px' }}
+          />
         </Card>
       </Col>
 
@@ -81,7 +95,7 @@ export const EditPrinterForm = () => {
                 <Controller
                   name="serialNumber"
                   control={control}
-                  defaultValue={printerData.serialNumber}
+                  defaultValue={printerData.data.serialNumber}
                   rules={{ required: 'Номер не должен быть пустым' }}
                   render={({ field }) => <Input {...field} />}
                 />
@@ -94,7 +108,7 @@ export const EditPrinterForm = () => {
                 <Controller
                   name="xeroxNumber"
                   control={control}
-                  defaultValue={printerData.xeroxNumber}
+                  defaultValue={printerData.data.xeroxNumber}
                   rules={{ required: 'Номер не должен быть пустым' }}
                   render={({ field }) => <Input {...field} />}
                 />
@@ -107,7 +121,7 @@ export const EditPrinterForm = () => {
                 <Controller
                   name="ip"
                   control={control}
-                  defaultValue={printerData.ip}
+                  defaultValue={printerData.data.ip}
                   render={({ field }) => <Input {...field} onInput={onChangeIp} />}
                   rules={{
                     pattern: {
@@ -125,14 +139,14 @@ export const EditPrinterForm = () => {
                 <Controller
                   name="office"
                   control={control}
-                  defaultValue={printerData.office}
+                  defaultValue={printerData.data.office}
                   rules={{ required: 'Офис не должен быть пустым' }}
                   render={({ field }) => (
                     <Select {...field}>
                       {office?.length &&
                         office.map((item) => (
                           <Select.Option key={item} value={`${item}`}>
-                            {office && offices[item].name}
+                            {offices && offices.data[item]?.name}
                           </Select.Option>
                         ))}
                     </Select>
@@ -147,7 +161,7 @@ export const EditPrinterForm = () => {
                 <Controller
                   name="description"
                   control={control}
-                  defaultValue={printerData.description}
+                  defaultValue={printerData.data.description}
                   rules={{ required: 'Поле не может быть пустым' }}
                   render={({ field }) => <Input {...field} />}
                 />
@@ -162,7 +176,7 @@ export const EditPrinterForm = () => {
                   control={control}
                   render={() => (
                     <Switch
-                      defaultChecked={printerData.isColor}
+                      defaultChecked={!!(printerData.data && printerData.data.isColor)}
                       checkedChildren="Цветной"
                       unCheckedChildren="Чёрно-белый"
                       onChange={(e) => {
