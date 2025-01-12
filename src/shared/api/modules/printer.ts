@@ -39,6 +39,7 @@ export const printersApi = {
       printerEndpoint + `/${id}.json`,
       payload,
     )
+
     return data
   },
   addPrinters: () => {},

@@ -1,5 +1,5 @@
 import { printersApi } from '@/shared/api/modules/printer'
-import { useQueryClient } from '@tanstack/react-query'
+import { QueryCache, useQueryClient } from '@tanstack/react-query'
 
 export const printerQueryKey = 'printer'
 
@@ -15,11 +15,13 @@ export const printerByIdQuery = (id: string) => ({
   queryFn: () => printersApi.getPrinterById(id).then((r) => r ?? null),
 })
 
-export const useInvaliatePrintersList = () => {
+export const useInvaliatePrintersList = (id?: string) => {
   const queryClient = useQueryClient()
-
-  return () =>
+  const queryCache = new QueryCache().clear()
+  return () => {
     queryClient.invalidateQueries({
-      queryKey: [printerQueryKey, 'list'],
+      queryKey: [printerQueryKey, 'list', id],
     })
+    queryCache
+  }
 }

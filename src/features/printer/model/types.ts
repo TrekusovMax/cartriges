@@ -1,7 +1,7 @@
 export type Printers = {
   [key: string]: PrinterData
 }
-type PrinterData = {
+export type PrinterData = {
   description: string
   image: string
   ip: string
@@ -11,3 +11,4 @@ type PrinterData = {
   title: string
   xeroxNumber: string
 }
+export type UpdatePrinterData = PrinterData & { id: string }

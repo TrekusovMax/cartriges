@@ -77,7 +77,7 @@ const router = createBrowserRouter([
       {
         path: `${ROUTER_PATHS.OFFICE}/${ROUTER_PATHS.PRINTER}/:id/edit`,
         lazy: () =>
-          import('@/pages/edit-page').then((res) => ({
+          import('@/pages/edit-printer').then((res) => ({
             Component: res.default,
           })),
         loader: ({ params }) => {
@@ -112,7 +112,7 @@ const router = createBrowserRouter([
       {
         path: ':id/edit',
         lazy: () =>
-          import('@/pages/edit-page').then((res) => ({
+          import('@/pages/edit-printer').then((res) => ({
             Component: res.default,
           })),
       },

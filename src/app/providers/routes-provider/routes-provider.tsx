@@ -1,8 +1,7 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
-import { lazy, Suspense } from 'react'
+import { lazy } from 'react'
 //import { ProtectedRoute } from './protected-route'
 import { MainLayout } from '@/widgets/layout/main-layout'
-import { Loader } from '@/shared/ui/loader'
 
 const MainPage = lazy(() => import('@/pages/main-page'))
 const OfficePage = lazy(() => import('@/pages/office'))
@@ -10,7 +9,7 @@ const PrinterPage = lazy(() => import('@/pages/printer-page'))
 const PrintersListPage = lazy(() => import('@/pages/printers-list-page'))
 const AddPrinter = lazy(() => import('@/pages/add-printer'))
 const AddCartrige = lazy(() => import('@/pages/add-cartrige'))
-const EditPage = lazy(() => import('@/pages/edit-page'))
+const EditPage = lazy(() => import('@/pages/edit-printer'))
 /* const UserProfile = lazy(() => import('@/pages/profile'))
 const LoginForm = lazy(() => import('@/pages/login'))
 const RegisterForm = lazy(() => import('@/pages/register'))
@@ -22,39 +21,30 @@ export const RoutesProvider = () => {
   return (
     <Routes>
       <Route path="/" element={<MainLayout />}>
-        <Route index element={<Suspense fallback={<Loader />}>{<MainPage />}</Suspense>} />
+        <Route index element={<MainPage />} />
       </Route>
 
       <Route path="/office" element={<MainLayout />}>
-        <Route index element={<Suspense fallback={<Loader />}>{<MainPage />}</Suspense>} />
-        <Route
-          path=":office"
-          element={<Suspense fallback={<Loader />}>{<OfficePage />}</Suspense>}
-        />
+        <Route index element={<MainPage />} />
+        <Route path=":office" element={<OfficePage />} />
         {/* <Route
           path=":office/printer/:id"
-          element={<Suspense fallback={<Loader />}>{<PrintersListPage />}</Suspense>}
+          element={<PrintersListPage />}
         /> */}
-        <Route
-          path=":office/:printer"
-          element={<Suspense fallback={<Loader />}>{<PrintersListPage />}</Suspense>}
-        />
+        <Route path=":office/:printer" element={<PrintersListPage />} />
       </Route>
 
       <Route path="/add-printer" element={<MainLayout />}>
-        <Route index element={<Suspense fallback={<Loader />}>{<AddPrinter />}</Suspense>} />
+        <Route index element={<AddPrinter />} />
       </Route>
       <Route path="/add-cartrige" element={<MainLayout />}>
-        <Route index element={<Suspense fallback={<Loader />}>{<AddCartrige />}</Suspense>} />
+        <Route index element={<AddCartrige />} />
       </Route>
 
       <Route path="/printer" element={<MainLayout />}>
         <Route index element={<Navigate to="/" />} />
-        <Route path=":id" element={<Suspense fallback={<Loader />}>{<PrinterPage />}</Suspense>} />
-        <Route
-          path=":id/edit"
-          element={<Suspense fallback={<Loader />}>{<EditPage />}</Suspense>}
-        />
+        <Route path=":id" element={<PrinterPage />} />
+        <Route path=":id/edit" element={<EditPage />} />
         <Route path="*" element={<Navigate to="/" />} />
       </Route>
 
@@ -62,7 +52,7 @@ export const RoutesProvider = () => {
       {/*
       
             <Route path="/printer" element={<MainLayout />}>
-        <Route index element={<Suspense fallback={<Loader />}>{<PrinterPage />}</Suspense>} />
+        <Route index element={<PrinterPage />} />
       </Route>
       </Route>
              <Route

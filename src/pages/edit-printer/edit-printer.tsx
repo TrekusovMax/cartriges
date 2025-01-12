@@ -1,5 +1,5 @@
 import { EditPrinterForm } from '@/widgets/edit-printer'
 
-export const EditPage = () => {
+export const EditPrinter = () => {
   return <EditPrinterForm />
 }
