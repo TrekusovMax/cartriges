@@ -32,7 +32,11 @@ export function useAppearanceDelay(
     minDisplay?: number
   },
 ) {
-  const { minDisplay = 500, defaultValue = false, appearenceDelay = 500 } = options
+  const {
+    minDisplay = 500,
+    defaultValue = false,
+    appearenceDelay = 500,
+  } = options
 
   const [delayedShow, setDelayedShow] = useState(defaultValue)
 
@@ -55,12 +59,15 @@ export function useAppearanceDelay(
 
 export function ComposeChildren({ children }: { children: ReactNode }) {
   const array = Children.toArray(children)
+
   const last = array.pop()
   return (
     <>
       {array.reduceRight(
         (child, element) =>
-          isValidElement(element) ? createElement(element.type, element.props, child) : child,
+          isValidElement(element)
+            ? createElement(element.type, element.props, child)
+            : child,
         last,
       )}
     </>
@@ -68,7 +75,9 @@ export function ComposeChildren({ children }: { children: ReactNode }) {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function useEventCallback<Fn extends (...args: any[]) => unknown>(fn: Fn) {
+export function useEventCallback<Fn extends (...args: any[]) => unknown>(
+  fn: Fn,
+) {
   const ref = useRef<Fn>(fn)
   useLayoutEffect(() => {
     ref.current = fn

@@ -12,7 +12,6 @@ export const UsePrinterImage = ({
   showImage: boolean
   imgUrl: string
   onClick: () => void
-
   showUploadList: boolean
   setShowUploadList: () => boolean
   onChange: () => void

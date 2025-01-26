@@ -1,6 +1,6 @@
 import { IPrinter } from '@/entities/printer/api/types'
 import { ipRegex } from '@/shared/lib/functions/CheckIp'
-import { useOnChangeIp } from '@/shared/lib/hooks/useOnChangeIp'
+import { useOnChangeIp } from '@/features/form/model/use-change-ip'
 import {
   Button,
   Card,

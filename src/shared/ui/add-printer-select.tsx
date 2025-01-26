@@ -1,14 +1,26 @@
-import { DBOffices, IPrinter } from '@/entities/printer/api/types'
+import { IPrinter } from '@/entities/printer/api/types'
 import { PlusOutlined } from '@ant-design/icons'
 import { Button, Divider, Input, InputRef, Select, Space } from 'antd'
 import React, { useEffect, useRef, useState } from 'react'
 import { Controller } from 'react-hook-form'
 import type { Control } from 'react-hook-form'
 
+type PrinterData = {
+  [key: string]: {
+    description: string
+    image: string
+    ip: string
+    isColor: boolean
+    office: string
+    serialNumber: string
+    title: string
+    xeroxNumber: string
+  }
+}
 type params = {
   controllerName: keyof IPrinter
   control: Control<IPrinter, any>
-  printers: DBOffices | undefined
+  printers: PrinterData | undefined
   showImage?: (val: string) => void
   imageSelected: React.MutableRefObject<boolean>
 }
@@ -41,7 +53,9 @@ export const AddPrinterSelect = ({
     setName(event.target.value)
   }
 
-  const addItem = (e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
+  const addItem = (
+    e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>,
+  ) => {
     e.preventDefault()
     if (!name.trim().length) return
     if (items.indexOf(name.trim()) >= 0) {
@@ -86,7 +100,10 @@ export const AddPrinterSelect = ({
                     onKeyDown={(e) => e.stopPropagation()}
                   />
                 </Space>
-                <Button type="text" icon={<PlusOutlined />} onClick={addItem}>
+                <Button
+                  type="text"
+                  icon={<PlusOutlined />}
+                  onClick={addItem}>
                   Добавить МФУ
                 </Button>
               </>

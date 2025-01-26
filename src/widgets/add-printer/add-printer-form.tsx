@@ -24,16 +24,27 @@ import {
   UseFormReturn,
 } from 'react-hook-form'
 import { IPrinter } from '@/entities/printer/api/types'
-import { useOnChangeIp } from '@/shared/lib/hooks/useOnChangeIp'
+import { useOnChangeIp } from '@/features/form/model/use-change-ip'
 import { useGetOfficesQuery } from '@/entities/app/api'
 import { useGetPrintersQuery } from '@/entities/printer/api'
 
-import { UploadTaskSnapshot, getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage'
+import {
+  UploadTaskSnapshot,
+  getDownloadURL,
+  ref,
+  uploadBytesResumable,
+} from 'firebase/storage'
 import { storage } from '@/shared/config/firebase/firebase-config'
 import { AddPrinterSelect } from '@/shared/ui/add-printer-select'
 import { AddPrinterImage } from '@/features/printer/model/add-printer-image'
-import { useAppDispatch, useAppSelector } from '@/app/providers/store-provider/store.types'
-import { fileRemove, getImageLoaded } from '@/entities/printer/api/printer.slice'
+import {
+  useAppDispatch,
+  useAppSelector,
+} from '@/app/providers/store-provider/store.types'
+import {
+  fileRemove,
+  getImageLoaded,
+} from '@/entities/printer/api/printer.slice'
 import { UploadChangeParam, UploadFile } from 'antd/es/upload'
 import { addPrinter } from '@/entities'
 import { ipRegex } from '@/shared/lib/functions/CheckIp'
@@ -54,7 +65,8 @@ export const AddPrinterForm = () => {
   const [showImage, setShowImage] = useState(false)
   const [progress, setProgress] = useState(0)
   const [imgUrl, setImgUrl] = useState('')
-  const [uploadStatus, setUploadStatus] = useState<ProgressStatuses>('active')
+  const [uploadStatus, setUploadStatus] =
+    useState<ProgressStatuses>('active')
 
   const { data: offices } = useGetOfficesQuery()
   const { data: printers } = useGetPrintersQuery()
@@ -75,14 +87,17 @@ export const AddPrinterForm = () => {
     errors,
   }
 
-  const onChange = useCallback((info: UploadChangeParam<UploadFile<any>>) => {
-    const { status } = info.file
-    setShowUploadList(true)
-    imageSelected.current = false
-    if (status === 'removed') {
-      dispatch(fileRemove())
-    }
-  }, [])
+  const onChange = useCallback(
+    (info: UploadChangeParam<UploadFile<any>>) => {
+      const { status } = info.file
+      setShowUploadList(true)
+      imageSelected.current = false
+      if (status === 'removed') {
+        dispatch(fileRemove())
+      }
+    },
+    [],
+  )
 
   const onFinish: SubmitHandler<IPrinter> = (data) => {
     data.isColor = checkedColorField
@@ -106,7 +121,11 @@ export const AddPrinterForm = () => {
       uploadTask.on(
         'state_changed',
         (snapshot: UploadTaskSnapshot) => {
-          setProgress(Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100))
+          setProgress(
+            Math.round(
+              (snapshot.bytesTransferred / snapshot.totalBytes) * 100,
+            ),
+          )
 
           switch (snapshot.state) {
             case 'paused':
@@ -121,17 +140,19 @@ export const AddPrinterForm = () => {
           setUploadStatus('exception')
         },
         async () => {
-          await getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-            dispatch(
-              addPrinter({
-                ...data,
-                image: downloadURL,
-              }),
-            )
-            setUploadStatus('success')
-            onReset()
-            message.success('Принтер добавлен')
-          })
+          await getDownloadURL(uploadTask.snapshot.ref).then(
+            (downloadURL) => {
+              dispatch(
+                addPrinter({
+                  ...data,
+                  image: downloadURL,
+                }),
+              )
+              setUploadStatus('success')
+              onReset()
+              message.success('Принтер добавлен')
+            },
+          )
         },
       )
     }
@@ -149,7 +170,9 @@ export const AddPrinterForm = () => {
     setShowImage(true)
     imageSelected.current = false
     if (printers) {
-      const url = Object.values(printers).filter((item) => item.title === val)
+      const url = Object.values(printers).filter(
+        (item) => item.title === val,
+      )
       if (url.length) {
         setImgUrl(url[0].image)
         imageSelected.current = true
@@ -185,7 +208,11 @@ export const AddPrinterForm = () => {
         imgUrl={imgUrl}
         progress={progress}
         showImage={showImage}
-        renderDataSelect={({ field }: { field: ControllerRenderProps<IPrinter, 'office'> }) => (
+        renderDataSelect={({
+          field,
+        }: {
+          field: ControllerRenderProps<IPrinter, 'office'>
+        }) => (
           <Select {...field}>
             {office?.length &&
               office.map((item) => (

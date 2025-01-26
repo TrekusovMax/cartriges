@@ -4,11 +4,10 @@ import { Controller } from 'react-hook-form'
 import { IPrinter } from '../api/types'
 
 import { PrinterCardImg } from '@/shared/ui/printer-card-img'
-import { useOnChangeIp } from '@/shared/lib/hooks/useOnChangeIp'
+import { useOnChangeIp } from '@/features/form/model/use-change-ip'
 import { ipRegex } from '@/shared/lib/functions/CheckIp'
-import { PrinterFormProps } from '../model/types'
 
-export const PrinterForm = ({
+export const PrinterForms = ({
   formControl,
   showImage,
   showProgress,
@@ -47,9 +46,17 @@ export const PrinterForm = ({
             width: '25%',
             display: showProgress ? 'flex' : 'none',
           }}>
-          <Progress percent={progress} size="default" status={uploadStatus} />
+          <Progress
+            percent={progress}
+            size="default"
+            status={uploadStatus}
+          />
         </Flex>
-        <Flex align="center" justify="space-evenly" vertical style={{ width: 400 }}>
+        <Flex
+          align="center"
+          justify="space-evenly"
+          vertical
+          style={{ width: 400 }}>
           {AddPrinterSelect && (
             <Form.Item
               label="Наименование"
@@ -94,7 +101,9 @@ export const PrinterForm = ({
               name="ip"
               control={control}
               defaultValue=""
-              render={({ field }) => <Input {...field} onInput={onChangeIp} />}
+              render={({ field }) => (
+                <Input {...field} onInput={onChangeIp} />
+              )}
               rules={{
                 pattern: {
                   value: ipRegex,
@@ -154,7 +163,10 @@ export const PrinterForm = ({
           <Space>
             <Button
               disabled={
-                (fileUpload || imageSelected.current) && !Object.keys(errors).length ? false : true
+                (fileUpload || imageSelected.current) &&
+                !Object.keys(errors).length
+                  ? false
+                  : true
               }
               type="primary"
               htmlType="submit">
